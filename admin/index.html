@@ -4,9 +4,35 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin | Mediablast Network</title>
-    <link href="/admin/config.yml" type="text/yaml" rel="cms-config-url">
   </head>
   <body>
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    
+    <script>
+      CMS.init({
+        config: {
+          backend: {
+            name: 'github',
+            repo: 'Y24KL/mediablastnetworkweb',
+            branch: 'main', // Change to 'master' if that is your primary branch
+            base_url: 'https://YOUR-PROXY-NAME.onrender.com' // 👈 PUT YOUR PROXY URL HERE
+          },
+          media_folder: 'public/images',
+          public_folder: '/images',
+          collections: [
+            {
+              name: 'blog',
+              label: 'Blog',
+              folder: 'content/blog',
+              create: true,
+              fields: [
+                { label: 'Title', name: 'title', widget: 'string' },
+                { label: 'Body', name: 'body', widget: 'markdown' }
+              ]
+            }
+          ]
+        }
+      });
+    </script>
   </body>
 </html>
