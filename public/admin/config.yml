@@ -2,7 +2,7 @@ backend:
   name: github
   repo: Y24KL/mediablastnetworkweb
   branch: main
-  base_url: https://api.github.com
+  base_url: https://mediablastnetworkweb.onrender.com
 
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
