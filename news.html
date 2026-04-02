@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News | Mediablasst Network</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="Light-theme">
+      <nav class="navbar glass sticky">
+    <a href="#home" class="logo-link">
+        <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="nav-logo-img">
+    </a>
+
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="live.html">Live TV</a></li>
+            <li><a href="programs.html">Programs</a></li>
+            <li><a href="news.html" class="active">News</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section id="blog" class="blog-section" style="padding-top: 120px;">
+        <div class="container">
+            <h2 class="section-title">Inside <span class="gradient-text">Mediablast Network</span></h2>
+            
+            <div class="filter-controls">
+                <input type="text" id="blogSearch" placeholder="Search news articles...">
+                <div class="filter-btns">
+                    <button class="filter-btn active" data-filter="all">All Stories</button>
+                </div>
+            </div>
+
+            <div class="blog-grid" id="blogGrid">
+                </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

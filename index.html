@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mediablast Network | Reaching Every World</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* ==================== 1. ADAPTIVE DAY & NIGHT MODE ==================== */
+        body.light-theme {
+            background-color: #ffffff !important;
+        }
+        body.light-theme h1, 
+        body.light-theme h2, 
+        body.light-theme h3, 
+        body.light-theme p, 
+        body.light-theme span:not(.live-indicator), 
+        body.light-theme a:not(.btn):not(.social-link) {
+            color: #000000 !important;
+        }
+        body.light-theme .glass {
+            background: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        body.dark-theme {
+            background-color: #141414 !important;
+        }
+        body.dark-theme h1, 
+        body.dark-theme h2, 
+        body.dark-theme h3, 
+        body.dark-theme p, 
+        body.dark-theme span:not(.live-indicator), 
+        body.dark-theme a:not(.btn):not(.social-link) {
+            color: #e0e0e0 !important;
+        }
+        body.dark-theme .glass {
+            background: rgba(30, 30, 30, 0.85) !important;
+        }
+
+        /* Hero Text Always White */
+        #home.hero .hero-content h1,
+        #home.hero .hero-content h1 span,
+        #home.hero .hero-content p {
+            color: #ffffff !important;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+        }
+
+        /* ==================== 2. FIXED CLICKABLE SOCIAL BUBBLE ==================== */
+        .social-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 10000; 
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+        }
+
+        .social-trigger {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(45deg, #ff0000, #990000);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white !important;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .social-icons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 15px;
+            opacity: 0;
+            pointer-events: none; /* Blocks clicks when hidden */
+            transition: all 0.3s ease-in-out;
+            transform: translateY(15px);
+        }
+
+        /* Opens on click (via Javascript) and on desktop hover as a fall-back */
+        .social-float:hover .social-icons,
+        .social-float.active .social-icons {
+            opacity: 1;
+            pointer-events: auto; /* Restores link clickability when visible */
+            transform: translateY(0);
+        }
+
+        /* Rotate the + icon into an X when active */
+        .social-float.active .social-trigger i {
+            transform: rotate(45deg);
+        }
+
+        .social-link {
+            width: 45px;
+            height: 45px;
+            background: #ffffff !important;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: 0.2s;
+        }
+        
+        .social-link i {
+            color: #333333 !important;
+        }
+
+        .social-link:hover {
+            transform: scale(1.1);
+            background: #f8f8f8 !important;
+        }
+
+        .custom-soc-icon {
+            width: 25px;
+            height: 25px;
+            object-fit: contain;
+        }
+
+        @media (max-width: 768px) {
+            .social-float { bottom: 20px; right: 20px; }
+        }
+    </style>
+</head>
+<body class="light-theme">
+    <div id="loader">
+        <div class="loader-content">
+            <div class="spinner"></div>
+           <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="loader-logo">
+        </div>
+    </div>
+
+    <nav class="navbar glass sticky">
+        <a href="#home" class="logo-link">
+            <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="nav-logo-img">
+        </a>
+        
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="live.html">Live TV</a></li>
+            <li><a href="programs.html">Programs</a></li>
+            <li><a href="news.html">News</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        
+        <div class="nav-extras">
+            <button id="theme-toggle" title="Toggle Mode"><i class="fas fa-moon"></i></button>
+            <div class="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <header id="home" class="hero">
+        <video autoplay muted loop playsinline class="hero-video">
+            <source src="videos/LOVEWORLD WORSHIP APP PROMO.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+        <div class="hero-overlay"></div>
+        <div class="hero-content reveal">
+            <h1>Reaching <br><span class="gradient-text">Every World</span></h1>
+            <p>Experience the next generation of digital media. High-definition storytelling, unfiltered news, and immersive entertainment blasted directly to you.</p>
+            <div class="cta-group">
+                <a href="live.html" class="btn btn-primary">Watch Live Now</a>
+                <a href="programs.html" class="btn btn-outline">View Schedule</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="live-teaser" class="teaser-section reveal">
+        <div class="container">
+            <div class="teaser-glass glass">
+                <div class="teaser-content">
+                    <span class="live-indicator"><span class="pulse-dot"></span> WATCH NOW</span>
+                    <h2>Testimonies of Praise</h2>
+                    <p>Nobody praises God goes away empty, you always come back with a testimony</p>
+                    <a href="live.html" class="btn btn-primary">Watch Live</a>
+                </div>
+                <div class="teaser-preview">
+                    <img src="image/ELI_J.png" alt="Live Preview">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="programs" class="programs-section reveal">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Trending <span class="gradient-text">Programs</span></h2>
+                <a href="programs.html" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="program-carousel">
+                <a href="programs.html" class="program-card-link">
+                    <div class="program-card glass">
+                        <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=60&w=800')">
+                            <span class="live-tag">LIVE</span>
+                        </div>
+                        <div class="card-body">
+                            <h3>Tech Pulse</h3>
+                            <p>Deep dives into the future of AI and 8K streaming.</p>
+                        </div>
+                    </div>
+                </a>
+                
+                <a href="programs.html" class="program-card-link">
+                    <div class="program-card glass">
+                        <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1504711432869-5d592f239cff?auto=format&fit=crop&q=60&w=800')"></div>
+                        <div class="card-body">
+                            <h3>The News Blast</h3>
+                            <p>Rapid-fire global updates, delivered unfiltered.</p>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="programs.html" class="program-card-link">
+                    <div class="program-card glass">
+                        <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=60&w=800')"></div>
+                        <div class="card-body">
+                            <h3>Mediablasst Originals</h3>
+                            <p>Exclusive documentaries and cinematic stories.</p>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="programs.html" class="program-card-link">
+                    <div class="program-card glass">
+                        <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=60&w=800')"></div>
+                        <div class="card-body">
+                            <h3>Midnight Vibes</h3>
+                            <p>Late-night sets from top digital artists.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="blog" class="blog-section reveal">
+        <div class="container">
+            <h2 class="section-title">Inside <span class="gradient-text">Mediablast</span></h2>
+            <div class="filter-controls glass">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="blogSearch" placeholder="Search news articles...">
+                </div>
+                <div class="filter-btns">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="tech">Tech</button>
+                    <button class="filter-btn" data-filter="media">Media</button>
+                </div>
+            </div>
+            <div class="blog-grid" id="blogGrid"></div>
+        </div>
+    </section>
+
+    <div class="social-float">
+        <div class="social-trigger"><i class="fas fa-plus"></i></div>
+        <div class="social-icons">
+            <a href="https://kingschat.online/user/mediablastnetwork" class="social-link kc-link" target="_blank" rel="noopener noreferrer">
+                <img src="image/Kc.png" alt="KingsChat" class="custom-soc-icon">
+            </a>
+            <a href="https://twitter.com/mediablastnetwork" class="social-link" target="_blank" rel="noopener noreferrer" title="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="https://youtube.com/@mediablastnetwork" class="social-link" target="_blank" rel="noopener noreferrer" title="YouTube"><i class="fab fa-youtube"></i></a>
+        </div>
+    </div>
+
+    <section id="contact" class="contact-section reveal">
+        <div class="container">
+            <div class="contact-grid glass">
+                <div class="contact-info">
+                    <h2 class="gradient-text">Contact Us</h2>
+                    <p>Have a tip, a story, or a partnership inquiry? Our newsroom is open 24/7.</p>
+                    <div class="info-details">
+                        <div class="info-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>@mediablastnetwork</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Asese, Maba</span>
+                        </div>
+                    </div>
+                    <div class="contact-socials">
+                        <a href="https://twitter.com/mediablastnetwork" target="_blank" rel="noopener noreferrer" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="https://kingschat.online/user/mediablastnetwork" target="_blank" rel="noopener noreferrer" title="KingsChat">
+                            <img src="image/Kc.png" alt="KingsChat" class="contact-kc-icon">
+                        </a>
+                        <a href="https://youtube.com/@mediablastnetwork" target="_blank" rel="noopener noreferrer" title="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <form action="https://formspree.io/f/meepelvp" method="POST" id="contactForm" class="contact-form">
+                    <div class="input-group">
+                        <input type="text" name="name" placeholder="Full Name" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" name="email" placeholder="Email Address" required>
+                    </div>
+                    <div class="input-group full-width">
+                        <textarea name="message" rows="5" placeholder="Your Message..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <span>Send Message</span>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                    <p id="form-status"></p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+
+    <script>
+        // 1. Social Float Click Toggle
+        const socialTrigger = document.querySelector('.social-trigger');
+        const socialFloat = document.querySelector('.social-float');
+        
+        socialTrigger.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevents instant closing
+            socialFloat.classList.toggle('active');
+        });
+
+        // Close it when clicking anywhere else on screen
+        document.addEventListener('click', (e) => {
+            if (!socialFloat.contains(e.target)) {
+                socialFloat.classList.remove('active');
+            }
+        });
+
+        // 2. Day & Night Mode Toggle
+        const themeBtn = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        themeBtn.addEventListener('click', () => {
+            if (body.classList.contains('light-theme')) {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                themeBtn.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        });
+    </script>
+</body>
+</html>
