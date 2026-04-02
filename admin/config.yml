@@ -1,6 +1,6 @@
 backend:
   name: git-gateway
-  branch: main
+  branch: main # or master, check your GitHub branch name
 
 media_folder: "image"
 public_folder: "image"
@@ -8,12 +8,15 @@ public_folder: "image"
 collections:
   - name: "settings"
     label: "Site Settings"
+    delete: false
+    editor:
+      preview: false
     files:
       - file: "settings.json"
-        label: "Global Settings"
-        name: "global"
-       # Add this field to your existing settings collection in config.yml
-fields:
-  - {label: "Stream URL", name: "stream_url", widget: "string"}
-  - {label: "Is Live Now?", name: "is_live", widget: "boolean", default: false}
-  - {label: "Backup Video URL", name: "backup_url", widget: "string", hint: "Video to play when not live"}
+        label: "Stream Configuration"
+        name: "stream_config"
+        fields:
+          - {label: "Stream URL", name: "stream_url", widget: "string"}
+          - {label: "Is Live Now?", name: "is_live", widget: "boolean", default: false}
+          - {label: "Backup Video URL", name: "backup_url", widget: "string"}
+          - {label: "Stream Title", name: "stream_title", widget: "string", default: "Mediablasst Exclusive Feed"}
