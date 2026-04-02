@@ -102,7 +102,7 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  // --- VIEWER COUNT LOGIC (Existing) ---
+  // --- VIEWER COUNT LOGIC ---
   const userId = "user_" + Math.random().toString(36).substr(2, 9);
   const viewersRef = ref(db, "viewers/" + userId);
   set(viewersRef, true);
@@ -111,56 +111,39 @@
   onValue(allViewersRef, (snapshot) => {
     const data = snapshot.val();
     const count = data ? Object.keys(data).length : 0;
-    document.getElementById("viewerCount").innerText = count;
+    const viewerElement = document.getElementById("viewerCount");
+    if(viewerElement) viewerElement.innerText = count;
   });
 
-  // --- DECAP CMS INTEGRATION LOGIC ---
+  // --- CMS SYNC LOGIC ---
   async function syncWithCMS() {
     try {
       const response = await fetch('/settings.json');
+      if (!response.ok) throw new Error('Settings file not found');
       const settings = await response.json();
       
       const video = document.getElementById('live-player');
-      const indicator = document.querySelector('.live-indicator'); // The LIVE badge
+      
+      // Determine which URL to use (Live or Backup)
+      const streamUrl = settings.is_live ? settings.stream_url : settings.backup_url;
 
-      if (settings.is_live && settings.stream_url) {
-        // --- LIVE MODE ---
-        indicator.style.display = "inline-block"; // Show RED live badge
-        
+      if (streamUrl) {
         if (Hls.isSupported()) {
-          var hls = new Hls();
-          hls.loadSource(settings.stream_url);
+          const hls = new Hls();
+          hls.loadSource(streamUrl);
           hls.attachMedia(video);
-          hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-        } else {
-          video.src = settings.stream_url;
-        }
-      } else if (settings.backup_url) {
-        // --- BACKUP / REPLAY MODE ---
-        indicator.style.display = "none"; // Hide the LIVE badge
-        
-        // If your backup is a normal video file or YouTube link
-        video.src = settings.backup_url;
-        video.loop = true; // Make it play on a loop
-        video.play();
-      }
-    } catch (error) {
-      console.log("Error loading settings or backup video.");
-    }
-  }
-        // For Safari which supports HLS natively
+          hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            video.play().catch(e => console.log("Autoplay blocked, user must click play."));
+          });
+        } 
         else if (video.canPlayType('application/vnd.apple.mpegurl')) {
           video.src = streamUrl;
-          video.addEventListener('loadedmetadata', function() {
-            video.play();
-          });
         }
       } else {
-        // If "Is Live" is toggled OFF in Decap, you can show a placeholder or hide the player
-        document.getElementById('live-content').innerHTML = "<h2 style='color:white; text-align:center; margin-top:50px;'>The stream is currently offline. Check back later!</h2>";
+        console.log("No stream URL or backup URL provided in CMS.");
       }
     } catch (error) {
-      console.error("CMS settings not found or stream error:", error);
+      console.log("CMS sync error:", error.message);
     }
   }
 
