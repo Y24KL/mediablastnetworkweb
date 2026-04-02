@@ -2,6 +2,7 @@ backend:
   name: github # Changed from git-gateway
   repo: Y24KL/mediablastnetworkweb
   branch: main
+  base_url: https://mediablastnetworkweb.vercel.app/
 
 media_folder: "image"
 public_folder: "image"
