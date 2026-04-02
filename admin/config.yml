@@ -1,9 +1,8 @@
 backend:
   name: github
-  repo: your-username/your-repo-name # e.g., mediablast/mbn-web
+  repo: Y24KL/mediablastnetworkweb
   branch: main
-  auth_type: proxy # This is the "Identity" style setting
-  proxy_url: https://api.netlify.com/cgi-bin/oauth-auth # We can still use Netlify's free helper!
+  auth_type: implicit
 
 media_folder: "image"
 public_folder: "image"
