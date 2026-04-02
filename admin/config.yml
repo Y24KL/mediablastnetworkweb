@@ -1,6 +1,7 @@
 backend:
-  name: git-gateway
-  branch: main # or master, check your GitHub branch name
+  name: github # Changed from git-gateway
+  repo: Y24KL/mediablastnetworkweb
+  branch: main
 
 media_folder: "image"
 public_folder: "image"
