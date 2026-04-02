@@ -1,8 +1,9 @@
 backend:
-  name: github # Changed from git-gateway
-  repo: Y24KL/mediablastnetworkweb
+  name: github
+  repo: your-username/your-repo-name # e.g., mediablast/mbn-web
   branch: main
-  base_url: https://mbn-gateway.vercel.app/
+  auth_type: proxy # This is the "Identity" style setting
+  proxy_url: https://api.netlify.com/cgi-bin/oauth-auth # We can still use Netlify's free helper!
 
 media_folder: "image"
 public_folder: "image"
