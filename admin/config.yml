@@ -3,7 +3,6 @@ backend:
   repo: Y24KL/mediablastnetworkweb
   branch: main
   base_url: https://netlify-cms-github-oauth-provider-1piz.onrender.com
-  auth_endpoint: oauth/authorize
 
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
