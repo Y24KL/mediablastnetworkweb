@@ -102,17 +102,34 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  // --- VIEWER COUNT LOGIC ---
+ // --- ENHANCED VIEWER COUNT LOGIC ---
   const userId = "user_" + Math.random().toString(36).substr(2, 9);
-  const viewersRef = ref(db, "viewers/" + userId);
-  set(viewersRef, true);
-  onDisconnect(viewersRef).remove();
-  const allViewersRef = ref(db, "viewers");
-  onValue(allViewersRef, (snapshot) => {
+  const userStatusRef = ref(db, 'status/' + userId);
+  const viewerCountDisplay = document.getElementById("viewerCount");
+
+  // 1. Create a reference to the 'status' folder in your database
+  // When the user connects, we set their status to "online"
+  set(userStatusRef, {
+    online: true,
+    last_changed: Date.now()
+  });
+
+  // 2. The MAGIC: When the user leaves/closes the tab, delete their record
+  onDisconnect(userStatusRef).remove();
+
+  // 3. Listen for changes in the 'status' folder
+  const allStatusRef = ref(db, 'status');
+  onValue(allStatusRef, (snapshot) => {
     const data = snapshot.val();
-    const count = data ? Object.keys(data).length : 0;
-    const viewerElement = document.getElementById("viewerCount");
-    if(viewerElement) viewerElement.innerText = count;
+    if (data) {
+      // The number of keys in the 'status' folder = number of people watching
+      const count = Object.keys(data).length;
+      if(viewerCountDisplay) {
+        viewerCountDisplay.innerText = count;
+      }
+    } else {
+      if(viewerCountDisplay) viewerCountDisplay.innerText = "0";
+    }
   });
 
   // --- CMS SYNC LOGIC ---
