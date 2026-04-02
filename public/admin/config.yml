@@ -1,8 +1,8 @@
 backend:
   name: github
   repo: Y24KL/mediablastnetworkweb
-  branch: main
-  base_url: https://mediablastnetworkweb.onrender.com
+  branch: main # Or your default branch name
+  base_url: https://netlify-cms-github-oauth-provider-1piz.onrender.com
 
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
