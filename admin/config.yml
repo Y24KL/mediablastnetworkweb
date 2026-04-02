@@ -1,0 +1,17 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "image"
+public_folder: "image"
+
+collections:
+  - name: "settings"
+    label: "Site Settings"
+    files:
+      - file: "settings.json"
+        label: "Global Settings"
+        name: "global"
+        fields:
+          - {label: "Live Stream URL", name: "stream_url", widget: "string"}
+          - {label: "Is Live Now", name: "is_live", widget: "boolean"}
