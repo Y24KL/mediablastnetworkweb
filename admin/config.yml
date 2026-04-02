@@ -4,16 +4,15 @@ backend:
   branch: main
   base_url: https://netlify-cms-github-oauth-provider-1piz.onrender.com
 
-media_folder: "images/uploads"
-public_folder: "/images/uploads"
+publish_mode: editorial_workflow # Optional: adds a 'Drafts' stage
+media_folder: "public/images"
+public_folder: "/images"
 
 collections:
-  - name: "posts"
-    label: "Posts"
-    folder: "posts"
+  - name: "blog"
+    label: "Blog"
+    folder: "content/blog"
     create: true
-    slug: "{{slug}}"
     fields:
       - { label: "Title", name: "title", widget: "string" }
-      - { label: "Date", name: "date", widget: "datetime" }
       - { label: "Body", name: "body", widget: "markdown" }
