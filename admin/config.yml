@@ -2,7 +2,7 @@ backend:
   name: github
   repo: Y24KL/mediablastnetworkweb
   branch: main
-  auth_type: implicit
+  auth_type: pkce # This is the "No-Server" magic setting
 
 media_folder: "image"
 public_folder: "image"
