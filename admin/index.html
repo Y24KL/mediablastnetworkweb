@@ -23,20 +23,15 @@
           },
           media_folder: 'public/images',
           public_folder: '/images',
-          collections:
-  - name: "settings"
-    label: "Site Settings"
-    delete: false # Prevents accidental deletion of your settings
-    editor:
-      preview: false
-    files:
-      - file: "settings.json"
-        label: "Stream Configuration"
-        name: "stream_config"
-        fields:
-          - {label: "Stream URL", name: "stream_url", widget: "string", hint: "Paste your .m3u8 or universal link here"}
-          - {label: "Is Live Now?", name: "is_live", widget: "boolean", default: false}
-          - {label: "Stream Title", name: "stream_title", widget: "string", default: "Mediablasst Exclusive Feed"}
+          collections: [
+            {
+              name: 'blog',
+              label: 'Blog',
+              folder: 'content/blog',
+              create: true,
+              fields: [
+                { label: 'Title', name: 'title', widget: 'string' },
+                { label: 'Body', name: 'body', widget: 'markdown' }
               ]
             }
           ]
