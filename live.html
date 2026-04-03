@@ -101,61 +101,63 @@
 
 <script>
 async function syncWithCMS() {
-    const container = document.getElementById('media-container');
-    const liveIndicator = document.querySelector('.live-indicator');
-    const titleDisplay = document.getElementById('stream-title');
+  const container = document.getElementById('media-container');
+  const liveIndicator = document.querySelector('.live-indicator');
 
-    try {
-        const res = await fetch('/content/settings/livestream.json?nocache=' + new Date().getTime(), {
-            cache: 'no-store'
-        });
-        
-        if (!res.ok) throw new Error('Settings not found');
-        const data = await res.json();
+  try {
+    // 1. Fetch data with cache busting
+    const res = await fetch('/content/settings/livestream.json?nocache=' + new Date().getTime(), {
+      cache: 'no-store'
+    });
+    
+    if (!res.ok) throw new Error('Settings file not found');
+    const data = await res.json();
 
-        if (data.title) titleDisplay.innerText = data.title;
+    // 2. Clear the container before loading new content
+    container.innerHTML = '';
 
-        // --- 🔴 LIVE MODE ---
-        if (data.status === "live" && data.m3u8_url) {
-            console.log("Status is LIVE");
-            liveIndicator.style.display = "inline-flex";
-            
-            container.innerHTML = `
-                <video id="live-player" controls autoplay playsinline></video>
-            `;
-            
-            const video = document.getElementById('live-player');
-            if (Hls.isSupported()) {
-                const hls = new Hls();
-                hls.loadSource(data.m3u8_url);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = data.m3u8_url;
-            }
-        } 
-        // --- ⏸️ OFFLINE MODE ---
-       } else {
-  // OFFLINE mode
-  console.log("Status is OFFLINE");
-  liveIndicator.style.display = "none";
-  
-  // We define the source INSIDE the video tag so the browser sees it instantly
-  container.innerHTML = `
-    <video id=\"bg-video\" autoplay muted loop playsinline
-      style=\"width:100%; height:100%; object-fit:cover;\">
-      <source src=\"${data.background_video}\" type=\"video/mp4\">
-    </video>
-  `;
-  
-  // Force a refresh of the video element
-  const v = document.getElementById('bg-video');
-  if (v) v.load();
+    // 3. Logic Switch
+    if (data.status === "live" && data.m3u8_url) {
+      console.log("Status is LIVE");
+      liveIndicator.style.display = "inline-flex";
+      
+      container.innerHTML = `<video id="live-player" controls autoplay playsinline style="width:100%; height:100%;"></video>`;
+      
+      const video = document.getElementById('live-player');
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(data.m3u8_url);
+        hls.attachMedia(video);
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = data.m3u8_url;
+      }
+    } 
+    else {
+      console.log("Status is OFFLINE");
+      liveIndicator.style.display = "none";
+      
+      // Ensure the path is correct for Render/GitHub
+      let vPath = data.background_video;
+      if (vPath && !vPath.startsWith('/') && !vPath.startsWith('http')) {
+        vPath = '/' + vPath;
+      }
+
+      container.innerHTML = `
+        <video id="bg-video" autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover;">
+          <source src="${vPath}" type="video/mp4">
+        </video>
+      `;
+      
+      const v = document.getElementById('bg-video');
+      if (v) v.load();
+    }
+  } catch (err) {
+    // This 'catch' block fixes the SyntaxError you seeing
+    console.error("Sync Error:", err);
+    container.innerHTML = `<p style="color:white; text-align:center;">Stream currently unavailable</p>`;
+  }
 }
-}
-// Initialize on load
+
+// Run once on load
 syncWithCMS();
 </script>
-
-</body>
-</html>
