@@ -99,6 +99,26 @@
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+
+<script>
+  // Replace this with YOUR actual config from Firebase Console
+const firebaseConfig = {
+  apiKey: "AIzaSyDzDUQ1i_CPP_nL4aTefmKPADzM-UVcCt0",
+  authDomain: "mbn-web-828e8.firebaseapp.com",
+  databaseURL: "https://mbn-web-828e8-default-rtdb.firebaseio.com",
+  projectId: "mbn-web-828e8",
+  storageBucket: "mbn-web-828e8.firebasestorage.app",
+  messagingSenderId: "432152602008",
+  appId: "1:432152602008:web:a492785cad9a1219b337ed",
+  measurementId: "G-FP2CCWHF13
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+</script>
+
 <script>
 async function syncWithCMS() {
   const container = document.getElementById('media-container');
