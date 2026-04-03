@@ -110,24 +110,22 @@ async function syncWithCMS() {
       }
 
     } else {
-      console.log("OFFLINE MODE ACTIVATED");
+  console.log("OFFLINE MODE ACTIVATED");
 
-      container.innerHTML = `
-        <video autoplay muted loop playsinline 
-          style="width:100%; height:100%; object-fit:cover;">
-          <source src="${data.background_video}" type="video/mp4">
-        </video>
-      `;
-    }
+  container.innerHTML = `
+    <video id="bg-video" autoplay muted loop playsinline
+      style="width:100%; height:100%; object-fit:cover; background:black;">
+    </video>
+  `;
 
-  } catch (err) {
-    console.error("ERROR:", err);
+  const video = document.getElementById('bg-video');
 
-    container.innerHTML = `
-      <p style="color:white">Error loading stream</p>
-    `;
-  }
+  // 🔥 Load Cloudinary video
+  video.src = data.background_video;
+
+  // Ensure autoplay
+  video.muted = true;
+  video.play().catch(() => {
+    console.log("Autoplay blocked");
+  });
 }
-
-syncWithCMS();
-</script>
