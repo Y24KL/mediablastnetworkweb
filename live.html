@@ -155,32 +155,27 @@
           hls.loadSource(data.m3u8_url);
           hls.attachMedia(video);
         }
-      } else {
-        liveIndicator.style.display = "none";
-        // We use data.background_video directly from the JSON
-        container.innerHTML = `
-          <div style="position: relative; width: 100%; height: 100%;">
-              <video id="bg-video" autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover;">
-                <source src="${data.background_video}" type="video/mp4">
-              </video>
-              <button id="volume-toggle" style="position: absolute; bottom: 20px; right: 20px; z-index: 10; background: rgba(0,0,0,0.6); color: white; border: 1px solid white; padding: 10px 15px; border-radius: 25px; cursor: pointer;">
-                  Unmute Sound
-              </button>
-          </div>
-        `;
-        const v = document.getElementById('bg-video');
-        const btn = document.getElementById('volume-toggle');
-        if (v && btn) {
-            btn.addEventListener('click', () => {
-                v.muted = !v.muted;
-                btn.innerText = v.muted ? 'Unmute Sound' : 'Mute Audio';
-            });
-        }
-      }
-    } catch (err) {
-      console.error("CMS Sync Error:", err);
-    }
-  }
+      } } else {
+      // OFFLINE MODE
+      liveIndicator.style.display = "none";
+      
+      // We force the absolute path to ensure Render finds the file
+      container.innerHTML = `
+        <div style="position: relative; width: 100%; height: 100%;">
+            <video id="bg-video" autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover;">
+              <source src="${data.background_video}" type="video/mp4">
+            </video>
+            <button id="volume-toggle" style="position: absolute; bottom: 20px; right: 20px; z-index: 10; background: rgba(0,0,0,0.6); color: white; border: 1px solid white; padding: 10px 15px; border-radius: 25px; cursor: pointer;">
+                Unmute Sound
+            </button>
+        </div>
+      `;
 
+      const v = document.getElementById('bg-video');
+      if (v) {
+          v.load(); // CRITICAL: This tells the browser to fetch the new source
+          v.play().catch(e => console.log("Autoplay blocked, waiting for interaction"));
+      }
+    }
   syncWithCMS();
 </script>
