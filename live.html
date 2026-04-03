@@ -131,33 +131,36 @@ async function syncWithCMS() {
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
         video.src = data.m3u8_url;
       }
-    } 
+    }  
     else {
+      // OFFLINE Mode
       console.log("Status is OFFLINE");
       liveIndicator.style.display = "none";
       
-      // Ensure the path is correct for Render/GitHub
-      let vPath = data.background_video;
-      if (vPath && !vPath.startsWith('/') && !vPath.startsWith('http')) {
-        vPath = '/' + vPath;
-      }
-
       container.innerHTML = `
-        <video id="bg-video" autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover;">
-          <source src="${vPath}" type="video/mp4">
-        </video>
+        <div style="position: relative; width: 100%; height: 100%;">
+            <video id="bg-video" autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover;">
+              <source src="${data.background_video}" type="video/mp4">
+            </video>
+            <button id="volume-control" style="position: absolute; bottom: 20px; right: 20px; z-index: 100; background: rgba(0,0,0,0.6); color: white; border: 1px solid white; padding: 8px 15px; border-radius: 30px; cursor: pointer; font-family: sans-serif;">
+                <i class="fas fa-volume-mute"></i> Unmute
+            </button>
+        </div>
       `;
-      
-      const v = document.getElementById('bg-video');
-      if (v) v.load();
-    }
-  } catch (err) {
-    // This 'catch' block fixes the SyntaxError you seeing
-    console.error("Sync Error:", err);
-    container.innerHTML = `<p style="color:white; text-align:center;">Stream currently unavailable</p>`;
-  }
-}
 
+      const v = document.getElementById('bg-video');
+      const btn = document.getElementById('volume-control');
+
+      if (v && btn) {
+          v.load();
+          btn.addEventListener('click', () => {
+              v.muted = !v.muted; // Flip between muted and unmuted
+              btn.innerHTML = v.muted ? 
+                  '<i class="fas fa-volume-mute"></i> Unmute' : 
+                  '<i class="fas fa-volume-up"></i> Mute';
+          });
+      }
+    }
 // Run once on load
 syncWithCMS();
 </script>
