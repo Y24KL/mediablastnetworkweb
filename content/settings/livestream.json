@@ -1,6 +1,5 @@
 {
   "status": "offline",
   "m3u8_url": "https://cdnstack.internetmultimediaonline.org/lwsat/lwsat.stream/playlist.m3u8",
-  "background_video": "https://player.cloudinary.com/embed/?cloud_name=duw6xrnpn&public_id=LOVEWORLD_WORSHIP_APP_PROMO_w1ucsh",
-  "placeholder_image": "/images/screenshot-2026-01-28-121752.png"
+  "background_video": "https://res.cloudinary.com/duw6xrnpn/video/upload/v123456789/LOVEWORLD_WORSHIP_APP_PROMO_w1ucsh.mp4"
 }
