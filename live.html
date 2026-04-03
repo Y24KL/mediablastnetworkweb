@@ -3,12 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIVE | Mediablasst Network</title>
+    <title>LIVE | Mediablast Network</title>
 
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
+        /* Professional enhancements for the player */
+        .video-wrapper {
+            background: #000;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            aspect-ratio: 16 / 9;
+        }
+
+        #live-player, #bg-video {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
         .back-home {
             color: white;
             text-decoration: none;
@@ -20,9 +36,7 @@
             transition: 0.3s;
         }
 
-        .back-home:hover {
-            background: rgba(255,255,255,0.2);
-        }
+        .back-home:hover { background: rgba(255,255,255,0.2); }
 
         .stats-pill {
             display: flex;
@@ -33,9 +47,13 @@
             border-radius: 20px;
             font-size: 14px;
         }
-
-        .stats-pill i {
+        
+        .live-indicator {
+            display: none; /* Hidden by default, shown by JS */
+            align-items: center;
+            gap: 5px;
             color: #ff4d4d;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -43,8 +61,6 @@
 <body class="live-theater-mode">
 
 <div id="live-content">
-
-    <!-- NAV -->
     <nav class="live-nav glass">
         <div class="logo">
             <a href="index.html">
@@ -59,81 +75,86 @@
 
             <div class="stats-pill">
                 <i class="fas fa-eye"></i>
-                <span id="viewerCount"></span>
+                <span id="viewerCount">0</span>
             </div>
 
-            <!-- BACK BUTTON -->
-            <a href="index.html" class="back-home">
-                ← Back to Home
-            </a>
+            <a href="index.html" class="back-home">← Back to Home</a>
         </div>
     </nav>
 
-    <!-- MAIN -->
-<main class="live-compact-container">
-    <section class="video-section-compact">
-        <div class="video-wrapper glass" id="media-container">
-            <p style="color: white; text-align: center; padding: 20px;">Connecting to Mediablast Network...</p>
-        </div>
+    <main class="live-compact-container">
+        <section class="video-section-compact">
+            <div class="video-wrapper glass" id="media-container">
+                <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                    <p style="color: white;">Connecting to Mediablast Network...</p>
+                </div>
+            </div>
 
-        <div class="video-details-compact">
-            <h1 id="stream-title">Mediablasst Exclusive Feed</h1>
-        </div>
-    </section>
-</main>
+            <div class="video-details-compact">
+                <h1 id="stream-title">Mediablasst Exclusive Feed</h1>
+            </div>
+        </section>
+    </main>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
 <script>
 async function syncWithCMS() {
-  const container = document.getElementById('media-container');
-  const liveIndicator = document.querySelector('.live-indicator');
+    const container = document.getElementById('media-container');
+    const liveIndicator = document.querySelector('.live-indicator');
+    const titleDisplay = document.getElementById('stream-title');
 
-  try {
-    // Fetches the latest settings from your CMS path
-    const res = await fetch('/content/settings/livestream.json?nocache=' + new Date().getTime(), {
-    cache: 'no-store'
-});
-    if (!res.ok) throw new Error('Settings not found');
-    const data = await res.json();
+    try {
+        const res = await fetch('/content/settings/livestream.json?nocache=' + new Date().getTime(), {
+            cache: 'no-store'
+        });
+        
+        if (!res.ok) throw new Error('Settings not found');
+        const data = await res.json();
 
-    // LIVE mode logic
-   // Check if it's explicitly set to live
-if (data.status === "live") {
-    console.log("Status is LIVE - Loading m3u8");
-    liveIndicator.style.display = "inline-flex";
-    // ... your HLS player code ...
-} else {
-    // This will run for "offline" OR any other error/status
-    console.log("Status is OFFLINE - Loading Background Video");
-    liveIndicator.style.display = "none";
-    container.innerHTML = `
-        <video id="bg-video" autoplay muted loop playsinline
-          style="width:100%; height:100%; object-fit:cover;">
-          <source src="${data.background_video}" type="video/mp4">
-        </video>
-    `;
-}
-    // OFFLINE mode logic
-    else {
-      liveIndicator.style.display = "none";
-      // We inject the full HTML at once to ensure the video source is registered correctly
-      container.innerHTML = `
-        <video id="bg-video" autoplay muted loop playsinline
-          style="width:100%; height:100%; object-fit:cover;">
-          <source src="${data.background_video}" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-      `;
+        if (data.title) titleDisplay.innerText = data.title;
+
+        // --- 🔴 LIVE MODE ---
+        if (data.status === "live" && data.m3u8_url) {
+            console.log("Status is LIVE");
+            liveIndicator.style.display = "inline-flex";
+            
+            container.innerHTML = `
+                <video id="live-player" controls autoplay playsinline></video>
+            `;
+            
+            const video = document.getElementById('live-player');
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(data.m3u8_url);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = data.m3u8_url;
+            }
+        } 
+        // --- ⏸️ OFFLINE MODE ---
+        else {
+            console.log("Status is OFFLINE");
+            liveIndicator.style.display = "none";
+            
+            container.innerHTML = `
+                <video id="bg-video" autoplay muted loop playsinline style="object-fit:cover;">
+                    <source src="${data.background_video}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            `;
+        }
+    } catch (err) {
+        console.error("CMS Sync Error:", err);
+        container.innerHTML = `<p style="color:white; text-align:center; padding-top:20%;">Feed currently unavailable</p>`;
     }
-  } catch (err) {
-    console.error("CMS Sync Error:", err);
-    container.innerHTML = `<p style="color:white; text-align:center;">Feed currently unavailable</p>`;
-  }
 }
 
-// Only runs once when the page loads
+// Initialize on load
 syncWithCMS();
-
-// The 15-second interval has been removed to prevent refreshing
 </script>
+
+</body>
+</html>
