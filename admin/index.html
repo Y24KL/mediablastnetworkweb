@@ -4,14 +4,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin | Mediablast Network</title>
-    
     <script>
       window.CMS_MANUAL_INIT = true;
     </script>
   </head>
   <body>
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-    
     <script>
       CMS.init({
         config: {
@@ -19,11 +17,56 @@
             name: 'github',
             repo: 'Y24KL/mediablastnetworkweb',
             branch: 'main', 
-            base_url: 'https://netlify-cms-github-oauth-provider-1piz.onrender.com' // 👈 Don't forget to put your actual Render Proxy URL here!
+            base_url: 'https://netlify-cms-github-oauth-provider-1piz.onrender.com'
           },
           media_folder: 'public/images',
           public_folder: '/images',
           collections: [
+            // --- NEW: LIVESTREAM MANAGER ---
+            {
+              name: "livestream",
+              label: "📺 Livestream Manager",
+              delete: false,
+              editor: { preview: false },
+              files: [
+                {
+                  name: "stream_config",
+                  label: "Stream Status & Links",
+                  file: "content/settings/livestream.json",
+                  fields: [
+                    {
+                      label: "Current Site Status",
+                      name: "status",
+                      widget: "select",
+                      options: [
+                        { label: "🔴 Live Now (Show m3u8)", value: "live" },
+                        { label: "⏸️ Offline (Show Background Video)", value: "offline" }
+                      ],
+                      default: "offline"
+                    },
+                    { 
+                      label: "Live m3u8 URL", 
+                      name: "m3u8_url", 
+                      widget: "string",
+                      hint: "The link for your live broadcast" 
+                    },
+                    { 
+                      label: "Offline Background Video", 
+                      name: "background_video", 
+                      widget: "file",
+                      hint: "Upload or select the video that plays while offline" 
+                    },
+                    { 
+                      label: "Commence Shortly Image", 
+                      name: "placeholder_image", 
+                      widget: "image",
+                      hint: "The 'Starting Soon' graphic" 
+                    }
+                  ]
+                }
+              ]
+            },
+            // --- BLOG COLLECTION ---
             {
               name: 'blog',
               label: 'Blog',
