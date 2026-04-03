@@ -88,72 +88,46 @@
 async function syncWithCMS() {
   const container = document.getElementById('media-container');
   const liveIndicator = document.querySelector('.live-indicator');
-  const titleDisplay = document.getElementById('stream-title');
 
   try {
-    const res = await fetch('/content/settings/livestream.json?ts=' + Date.now());
-    if (!res.ok) throw new Error("CMS file not found");
-
+    const res = await fetch('/content/settings/settings.json?ts=' + Date.now());
     const data = await res.json();
 
     console.log("CMS DATA:", data);
 
-    // Update title
-    if (data.title) titleDisplay.innerText = data.title;
-
     // 🔴 LIVE MODE
-    if (data.status === "live" && data.m3u8_url) {
+    if (data.is_live && data.stream_url) {
 
       liveIndicator.style.display = "inline-flex";
 
       container.innerHTML = `
         <video id="live-player" controls autoplay playsinline
-          style="width:100%; height:100%; background:black; border-radius:12px;"></video>
+          style="width:100%; height:100%; background:black;"></video>
       `;
 
       const video = document.getElementById('live-player');
 
       if (Hls.isSupported()) {
         const hls = new Hls();
-        hls.loadSource(data.m3u8_url);
+        hls.loadSource(data.stream_url);
         hls.attachMedia(video);
       } else {
-        video.src = data.m3u8_url;
+        video.src = data.stream_url;
       }
 
     } else {
 
-      // ⏸️ OFFLINE MODE (VIDEO ONLY — NO IMAGE)
+      // ⏸️ OFFLINE MODE (Cloudinary video)
       liveIndicator.style.display = "none";
 
       container.innerHTML = `
-        <div style="position:relative; width:100%; height:100%;">
-
-          <video id="bg-video" autoplay muted loop playsinline
-            style="width:100%; height:100%; object-fit:cover;">
-          </video>
-
-          <div style="
-            position:absolute;
-            top:50%;
-            left:50%;
-            transform:translate(-50%, -50%);
-            color:white;
-            text-align:center;
-            background:rgba(0,0,0,0.4);
-            padding:20px 30px;
-            border-radius:12px;
-          ">
-            <h2>🔴 OFF AIR</h2>
-            <p>We’ll be live shortly</p>
-          </div>
-
-        </div>
+        <video id="bg-video" autoplay muted loop playsinline
+          style="width:100%; height:100%; object-fit:cover;">
+        </video>
       `;
 
       const video = document.getElementById('bg-video');
 
-      // 🔥 CLOUDINARY VIDEO LOAD
       video.src = data.background_video;
 
       video.play().catch(() => {
@@ -163,14 +137,9 @@ async function syncWithCMS() {
 
   } catch (err) {
     console.error("ERROR:", err);
-
-    container.innerHTML = `
-      <p style="color:white">⚠️ Failed to load stream</p>
-    `;
   }
 }
 
-// Auto refresh every 10 seconds
 syncWithCMS();
 setInterval(syncWithCMS, 10000);
 </script>
