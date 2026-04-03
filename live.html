@@ -87,116 +87,47 @@
 <script>
 async function syncWithCMS() {
   const container = document.getElementById('media-container');
-  const titleDisplay = document.getElementById('stream-title');
-  const liveIndicator = document.querySelector('.live-indicator');
 
   try {
-    const response = await fetch('/content/settings/livestream.json', { cache: "no-store" });
-    if (!response.ok) throw new Error('CMS Settings not found');
+    const res = await fetch('/content/settings/livestream.json?ts=' + Date.now());
+    const data = await res.json();
 
-    const data = await response.json();
+    console.log("CMS DATA:", data); // 👈 DEBUG
 
-    // Update title
-    if (data.title) titleDisplay.innerText = data.title;
-
-    // 🔴 LIVE MODE
-    if (data.status === 'live' && data.m3u8_url) {
-
-      liveIndicator.style.display = "inline-flex";
-
+    if (data.status === "live" && data.m3u8_url) {
       container.innerHTML = `
-        <video id="live-player" controls autoplay playsinline 
-        style="width:100%; height:100%; border-radius:12px; background:black;"></video>
+        <video id="live-player" controls autoplay playsinline style="width:100%; height:100%"></video>
       `;
 
       const video = document.getElementById('live-player');
 
       if (Hls.isSupported()) {
-        const hls = new Hls({
-          maxBufferLength: 30
-        });
-
+        const hls = new Hls();
         hls.loadSource(data.m3u8_url);
         hls.attachMedia(video);
-
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          video.play().catch(() => {});
-        });
-
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      } else {
         video.src = data.m3u8_url;
       }
 
     } else {
-
-      // ⏸️ OFFLINE MODE
-      liveIndicator.style.display = "none";
+      console.log("OFFLINE MODE ACTIVATED");
 
       container.innerHTML = `
-        <div style="position:relative; width:100%; height:100%;">
-          
-          <video id="bg-video" autoplay muted loop playsinline
-            style="width:100%; height:100%; object-fit:cover; border-radius:12px;">
-            <source src="${data.background_video}" type="video/mp4">
-          </video>
-
-          <!-- Overlay -->
-          <div style="
-            position:absolute;
-            top:50%;
-            left:50%;
-            transform:translate(-50%, -50%);
-            color:white;
-            text-align:center;
-            background: rgba(0,0,0,0.5);
-            padding:20px 30px;
-            border-radius:12px;
-            backdrop-filter: blur(10px);
-          ">
-            <h2 style="margin:0;">🔴 Stream Offline</h2>
-            <p style="margin:5px 0 0;">We’ll be live shortly</p>
-          </div>
-
-        </div>
+        <video autoplay muted loop playsinline 
+          style="width:100%; height:100%; object-fit:cover;">
+          <source src="${data.background_video}" type="video/mp4">
+        </video>
       `;
-
-      // Fallback if video fails
-      const bgVideo = document.getElementById('bg-video');
-      bgVideo.onerror = () => {
-        container.innerHTML = `
-          <div style="
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            height:100%;
-            color:white;
-            text-align:center;">
-            <div>
-              <h2>🔴 Stream Offline</h2>
-              <p>Background video not available</p>
-            </div>
-          </div>
-        `;
-      };
     }
 
-  } catch (error) {
-    console.log("CMS Error:", error.message);
+  } catch (err) {
+    console.error("ERROR:", err);
 
     container.innerHTML = `
-      <div style="
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        height:100%;
-        color:white;">
-        <p>⚠️ Unable to load stream settings</p>
-      </div>
+      <p style="color:white">Error loading stream</p>
     `;
   }
 }
 
-// Auto refresh every 15 seconds (so it updates when you go live)
 syncWithCMS();
-setInterval(syncWithCMS, 15000);
 </script>
