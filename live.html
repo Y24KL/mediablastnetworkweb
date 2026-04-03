@@ -91,26 +91,29 @@ async function syncWithCMS() {
 
   try {
     // Fetches the latest settings from your CMS path
-    const res = await fetch('/content/settings/livestream.json?ts=' + Date.now());
+    const res = await fetch('/content/settings/livestream.json?nocache=' + new Date().getTime(), {
+    cache: 'no-store'
+});
     if (!res.ok) throw new Error('Settings not found');
     const data = await res.json();
 
     // LIVE mode logic
-    if (data.status === "live" && data.m3u8_url) {
-      liveIndicator.style.display = "inline-flex";
-      container.innerHTML = `
-        <video id="live-player" controls autoplay playsinline
-          style="width:100%; height:100%; object-fit:contain;"></video>
-      `;
-      const video = document.getElementById('live-player');
-      if (Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(data.m3u8_url);
-        hls.attachMedia(video);
-      } else {
-        video.src = data.m3u8_url;
-      }
-    } 
+   // Check if it's explicitly set to live
+if (data.status === "live") {
+    console.log("Status is LIVE - Loading m3u8");
+    liveIndicator.style.display = "inline-flex";
+    // ... your HLS player code ...
+} else {
+    // This will run for "offline" OR any other error/status
+    console.log("Status is OFFLINE - Loading Background Video");
+    liveIndicator.style.display = "none";
+    container.innerHTML = `
+        <video id="bg-video" autoplay muted loop playsinline
+          style="width:100%; height:100%; object-fit:cover;">
+          <source src="${data.background_video}" type="video/mp4">
+        </video>
+    `;
+}
     // OFFLINE mode logic
     else {
       liveIndicator.style.display = "none";
