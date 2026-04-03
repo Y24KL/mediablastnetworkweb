@@ -97,11 +97,13 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
-
+<script src="https://unpkg.com/firebase@9.6.10/firebase-app-compat.js"></script>
+<script src="https://unpkg.com/firebase@9.6.10/firebase-database-compat.js"></script>
+    
 <script>
   // 1. Firebase Configuration (FIXED)
+  <script>
+  // 1. Firebase Configuration
   const firebaseConfig = {
     apiKey: "AIzaSyDzDUQ1i_CPP_nL4aTefmKPADzM-UVcCt0",
     authDomain: "mbn-web-828e8.firebaseapp.com",
@@ -113,38 +115,38 @@
     measurementId: "G-FP2CCWHF13"
   };
 
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
+  // Only initialize if firebase script loaded successfully
+  if (typeof firebase !== 'undefined') {
+      firebase.initializeApp(firebaseConfig);
+      const database = firebase.database();
+      const viewerCountSpan = document.getElementById('viewerCount');
+      const vCountRef = database.ref('liveViewers');
 
-  // 2. Presence Logic
-  const viewerCountSpan = document.getElementById('viewerCount');
-  const vCountRef = database.ref('liveViewers');
+      database.ref('.info/connected').on('value', (snapshot) => {
+          if (snapshot.val() === true) {
+              const myPresenceRef = vCountRef.push(true);
+              myPresenceRef.onDisconnect().remove();
+          }
+      });
 
-  database.ref('.info/connected').on('value', (snapshot) => {
-      if (snapshot.val() === true) {
-          const myPresenceRef = vCountRef.push(true);
-          myPresenceRef.onDisconnect().remove();
-      }
-  });
+      vCountRef.on('value', (snapshot) => {
+          viewerCountSpan.innerText = snapshot.numChildren();
+      });
+  } else {
+      console.error("Firebase failed to load. Check your internet or CDN link.");
+  }
 
-  vCountRef.on('value', (snapshot) => {
-      viewerCountSpan.innerText = snapshot.numChildren();
-  });
-
-  // 3. CMS Sync Logic
+  // 2. CMS Sync Logic
   async function syncWithCMS() {
     const container = document.getElementById('media-container');
     const liveIndicator = document.querySelector('.live-indicator');
 
     try {
-      const res = await fetch('/content/settings/livestream.json?nocache=' + new Date().getTime(), {
-        cache: 'no-store'
-      });
-      
+      const res = await fetch('/content/settings/livestream.json?nocache=' + new Date().getTime());
       if (!res.ok) throw new Error('Settings not found');
       const data = await res.json();
 
-      if (data.status === "live" && data.m3u8_url) {
+      if (data.status === "live") {
         liveIndicator.style.display = "inline-flex";
         container.innerHTML = `<video id="live-player" controls autoplay playsinline style="width:100%; height:100%;"></video>`;
         const video = document.getElementById('live-player');
@@ -152,39 +154,33 @@
           const hls = new Hls();
           hls.loadSource(data.m3u8_url);
           hls.attachMedia(video);
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-          video.src = data.m3u8_url;
         }
       } else {
         liveIndicator.style.display = "none";
+        // We use data.background_video directly from the JSON
         container.innerHTML = `
           <div style="position: relative; width: 100%; height: 100%;">
               <video id="bg-video" autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover;">
                 <source src="${data.background_video}" type="video/mp4">
               </video>
               <button id="volume-toggle" style="position: absolute; bottom: 20px; right: 20px; z-index: 10; background: rgba(0,0,0,0.6); color: white; border: 1px solid white; padding: 10px 15px; border-radius: 25px; cursor: pointer;">
-                  <i class="fas fa-volume-mute"></i> Click for Sound
+                  Unmute Sound
               </button>
           </div>
         `;
-
         const v = document.getElementById('bg-video');
         const btn = document.getElementById('volume-toggle');
         if (v && btn) {
-            v.load();
             btn.addEventListener('click', () => {
                 v.muted = !v.muted;
-                btn.innerHTML = v.muted ? '<i class="fas fa-volume-mute"></i> Click for Sound' : '<i class="fas fa-volume-up"></i> Mute Audio';
+                btn.innerText = v.muted ? 'Unmute Sound' : 'Mute Audio';
             });
         }
       }
     } catch (err) {
-      console.error("Sync Error:", err);
-      container.innerHTML = `<p style="color:white; text-align:center; padding-top:20%;">Connecting...</p>`;
+      console.error("CMS Sync Error:", err);
     }
   }
 
   syncWithCMS();
 </script>
-</body>
-</html>
