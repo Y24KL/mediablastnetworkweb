@@ -4,9 +4,8 @@ backend:
   branch: main
   base_url: https://netlify-cms-github-oauth-provider-1piz.onrender.com
 
-publish_mode: editorial_workflow # Optional: adds a 'Drafts' stage
-media_folder: "public/images"
-public_folder: "/images"
+media_folder: "image"
+public_folder: "image"
 
 collections:
   - name: "settings"
