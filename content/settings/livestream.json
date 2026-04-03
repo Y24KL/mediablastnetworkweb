@@ -1,5 +1,5 @@
 {
-  "status": "live",
+  "status": "offline",
   "title": "MEDIABLAST NETWORK STREAM",
   "m3u8_url": "https://cdnstack.internetmultimediaonline.org/lwsat/lwsat.stream/playlist.m3u8",
   "background_video": "/public/images/loveworld-worship-app-promo.mp4"
