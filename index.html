@@ -138,124 +138,111 @@
             margin-top: 30px;
         }
 
-     /* ==================== MOBILE REDESIGN - CONTACT FORM (EXACTLY LIKE YOUR SCREENSHOT) ==================== */
-        .contact-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.5fr;
-            gap: 40px;
-            padding: 40px;
-            border-radius: 24px;
-            margin-top: 30px;
-        }
+/* ==================== CONTACT SECTION STYLING ==================== */
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 40px;
+    padding: 40px;
+    border-radius: 24px;
+    margin-top: 30px;
+    align-items: start;
+}
 
-        @media (max-width: 768px) {
-            .contact-grid {
-                display: flex;
-                flex-direction: column;
-                gap: 32px;
-                padding: 28px 20px;
-                margin-top: 20px;
-                border-radius: 20px;
-            }
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
 
-            /* Contact Info - still clean but secondary on mobile */
-            .contact-info {
-                text-align: center;
-            }
-            .contact-info h2 {
-                font-size: 32px;
-                margin-bottom: 12px;
-            }
-            .contact-info p {
-                font-size: 17px;
-                line-height: 1.5;
-                margin-bottom: 24px;
-            }
-            .info-details {
-                display: flex;
-                flex-direction: column;
-                gap: 16px;
-                align-items: center;
-            }
-            .info-item {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                font-size: 17px;
-            }
-            .contact-socials {
-                margin-top: 20px;
-                display: flex;
-                justify-content: center;
-                gap: 18px;
-            }
-            .contact-socials a {
-                font-size: 26px;
-                width: 48px;
-                height: 48px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
 
-            /* FORM - EXACT MATCH TO YOUR SCREENSHOT */
-            .contact-form {
-                width: 100%;
-                background: #f9f9f9;
-                padding: 32px 24px;
-                border-radius: 20px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            }
+.contact-form label {
+    font-weight: 600;
+    font-size: 14px;
+    opacity: 0.8;
+}
 
-            .contact-form label {
-                font-size: 16px;
-                margin-bottom: 10px;
-            }
+.contact-form input, 
+.contact-form textarea {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.1);
+    background: rgba(255,255,255,0.8);
+    font-size: 16px; /* Prevents iOS zoom-on-focus */
+    transition: 0.3s;
+}
 
-            .contact-form input,
-            .contact-form textarea {
-                padding: 18px 20px !important;
-                font-size: 17px !important;
-                border-radius: 14px;
-                margin-bottom: 24px;
-                border: 1px solid #e5e5e5;
-            }
+/* Dark Theme Input Adjustments */
+body.dark-theme .contact-form input,
+body.dark-theme .contact-form textarea {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.1);
+    color: white;
+}
 
-            .contact-form textarea {
-                min-height: 160px !important;
-                resize: vertical;
-            }
+.submit-btn {
+    background: #0a0a2c;
+    color: white !important;
+    padding: 18px;
+    border-radius: 50px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(10,10,44,0.3);
+    transition: 0.3s;
+}
 
-            /* Send Message button - exact dark navy style from screenshot */
-            .contact-form button {
-                background: #0a0a2c !important;
-                color: #ffffff !important;
-                border: none;
-                width: 100%;
-                padding: 18px 24px;
-                font-size: 18px;
-                font-weight: 600;
-                border-radius: 9999px;
-                box-shadow: 0 6px 20px rgba(10, 10, 44, 0.25);
-                margin-top: 8px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-            }
+.submit-btn:hover {
+    transform: translateY(-3px);
+    background: #1a1a4d;
+}
 
-            .contact-form button:hover {
-                background: #1a1a3d !important;
-                transform: translateY(-1px);
-            }
+/* ==================== MOBILE RESPONSIVENESS ==================== */
+@media (max-width: 768px) {
+    .contact-grid {
+        grid-template-columns: 1fr; /* Stack columns */
+        padding: 25px 20px;
+        gap: 30px;
+    }
 
-            /* Placeholders - light gray like screenshot */
-            .contact-form input::placeholder,
-            .contact-form textarea::placeholder {
-                color: #9ca3af;
-                opacity: 1;
-            }
-        }
+    .contact-info {
+        text-align: center;
+    }
+
+    .contact-info h2 {
+        font-size: 2.5rem;
+    }
+
+    .info-details {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .contact-socials {
+        justify-content: center;
+    }
+
+    .contact-form {
+        padding: 0;
+        background: transparent;
+        box-shadow: none;
+    }
+    
+    .contact-form input, 
+    .contact-form textarea {
+        padding: 14px; /* Slightly smaller for mobile screens */
+    }
+}
     </style>
 </head>
 <body class="light-theme">
@@ -395,54 +382,54 @@
             <a href="https://youtube.com/@mediablastnetwork" class="social-link" target="_blank" rel="noopener noreferrer" title="YouTube"><i class="fab fa-youtube"></i></a>
         </div>
     </div>
-
-    <section id="contact" class="contact-section reveal">
-        <div class="container">
-            <div class="contact-grid glass">
-                <div class="contact-info">
-                    <h2 class="gradient-text">Contact Us</h2>
-                    <p>Have a tip, a story, or a partnership inquiry? Our newsroom is open 24/7.</p>
-                    <div class="info-details">
-                        <div class="info-item">
-                            <i class="fas fa-envelope"></i>
-                            <span>@mediablastnetwork</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Asese, Maba</span>
-                        </div>
+<section id="contact" class="contact-section reveal">
+    <div class="container">
+        <div class="contact-grid glass">
+            
+            <div class="contact-info">
+                <h2 class="gradient-text">Contact Us</h2>
+                <p>Have a tip, a story, or a partnership inquiry? Our newsroom is open 24/7.</p>
+                <div class="info-details">
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>@mediablastnetwork</span>
                     </div>
-                    <div class="contact-socials">
-                        <a href="https://twitter.com/mediablastnetwork" target="_blank" rel="noopener noreferrer" title="Twitter"><i class="fab fa-twitter"></i></a>
-                        <a href="https://kingschat.online/user/mediablastnetwork" target="_blank" rel="noopener noreferrer" title="KingsChat">
-                            <img src="image/Kc.png" alt="KingsChat" class="contact-kc-icon">
-                        </a>
-                        <a href="https://youtube.com/@mediablastnetwork" target="_blank" rel="noopener noreferrer" title="YouTube"><i class="fab fa-youtube"></i></a>
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Asese, Maba</span>
                     </div>
                 </div>
-
-                 <form action="https://formspree.io/f/meepelvp" method="POST" id="contactForm" class="contact-form">
-                 <form id="my-form" class="bg-slate-50 p-10 rounded-3xl border border-slate-200" data-aos="fade-left">
-                <div class="mb-4">
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Name</label>
-                    <input type="text" name="name" placeholder="Enter your full name" required class="w-full px-4 py-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
+                <div class="contact-socials">
+                    <a href="https://twitter.com/mediablastnetwork" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
+                    <a href="https://kingschat.online/user/mediablastnetwork" target="_blank" rel="noopener noreferrer">
+                        <img src="image/Kc.png" alt="KingsChat" class="contact-kc-icon">
+                    </a>
+                    <a href="https://youtube.com/@mediablastnetwork" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Email Address</label>
-                    <input type="email" name="email" placeholder="your@email.com" required class="w-full px-4 py-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
-                </div>
-                <div class="mb-6">
-                    <label class="block text-sm font-bold text-slate-700 mb-2">How can we help?</label>
-                    <textarea name="message" placeholder="Tell us about your project" required rows="4" class="w-full px-4 py-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"></textarea>
-                </div>
-                <button type="submit" id="submit-button" class="w-full bg-slate-900 text-white px-6 py-4 rounded-xl font-bold hover:bg-emerald-600 transition shadow-lg">
-    Send Message
-</button>
-                <p id="form-status" class="mt-4 text-center text-sm font-medium"></p>
-            </form>
             </div>
+
+            <form action="https://formspree.io/f/meepelvp" method="POST" id="contactForm" class="contact-form">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" name="name" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" name="email" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>How can we help?</label>
+                    <textarea name="message" placeholder="Tell us about your project" required rows="4"></textarea>
+                </div>
+                <button type="submit" class="submit-btn">
+                    Send Message
+                </button>
+                <p id="form-status"></p>
+            </form>
+
         </div>
-    </section>
+    </div>
+</section>
 
     <script src="script.js"></script>
 
