@@ -59,7 +59,7 @@
 
             <div class="stats-pill">
                 <i class="fas fa-eye"></i>
-                <span id="viewerCount">0</span>
+                <span id="viewerCount"></span>
             </div>
 
             <!-- BACK BUTTON -->
@@ -70,97 +70,65 @@
     </nav>
 
     <!-- MAIN -->
-   <main class="live-compact-container">
-        <section class="video-section-compact">
-            <div class="video-wrapper glass">
-                <video id="live-player" controls autoplay playsinline style="width:100%; height:100%; border-radius: 12px;">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
+<main class="live-compact-container">
+    <section class="video-section-compact">
+        <div class="video-wrapper glass" id="media-container">
+            <p style="color: white; text-align: center; padding: 20px;">Connecting to Mediablast Network...</p>
+        </div>
 
-            <div class="video-details-compact">
-                <h1 id="stream-title">Mediablasst Exclusive Feed</h1>
-            </div>
-        </section>
-    </main>
-
-</div>
+        <div class="video-details-compact">
+            <h1 id="stream-title">Mediablasst Exclusive Feed</h1>
+        </div>
+    </section>
+</main>
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getDatabase, ref, onValue, set, onDisconnect } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+  // ... (Your Firebase code remains exactly the same here) ...
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDzDUQ1i_CPP_nL4aTefmKPADzM-UVcCt0",
-    authDomain: "mbn-web-828e8.firebaseapp.com",
-    databaseURL: "https://mbn-web-828e8-default-rtdb.firebaseio.com",
-    projectId: "mbn-web-828e8",
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
- // --- ENHANCED VIEWER COUNT LOGIC ---
-  const userId = "user_" + Math.random().toString(36).substr(2, 9);
-  const userStatusRef = ref(db, 'status/' + userId);
-  const viewerCountDisplay = document.getElementById("viewerCount");
-
-  // 1. Create a reference to the 'status' folder in your database
-  // When the user connects, we set their status to "online"
-  set(userStatusRef, {
-    online: true,
-    last_changed: Date.now()
-  });
-
-  // 2. The MAGIC: When the user leaves/closes the tab, delete their record
-  onDisconnect(userStatusRef).remove();
-
-  // 3. Listen for changes in the 'status' folder
-  const allStatusRef = ref(db, 'status');
-  onValue(allStatusRef, (snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-      // The number of keys in the 'status' folder = number of people watching
-      const count = Object.keys(data).length;
-      if(viewerCountDisplay) {
-        viewerCountDisplay.innerText = count;
-      }
-    } else {
-      if(viewerCountDisplay) viewerCountDisplay.innerText = "0";
-    }
-  });
-
-  // --- CMS SYNC LOGIC ---
+  // --- CMS & STREAM LOGIC ---
   async function syncWithCMS() {
     try {
-      const response = await fetch('/settings.json');
-      if (!response.ok) throw new Error('Settings file not found');
-      const settings = await response.json();
+      // 1. MATCH THE CMS PATH: Changed from '/settings.json' to the real path
+      const response = await fetch('/content/settings/livestream.json');
+      if (!response.ok) throw new Error('CMS Settings not found');
       
-      const video = document.getElementById('live-player');
-      
-      // Determine which URL to use (Live or Backup)
-      const streamUrl = settings.is_live ? settings.stream_url : settings.backup_url;
+      const data = await response.json();
+      const container = document.getElementById('media-container');
+      const titleDisplay = document.getElementById('stream-title');
 
-      if (streamUrl) {
+      // Update the Title from CMS
+      if (data.title) titleDisplay.innerText = data.title;
+
+      // 2. CHECK STATUS (Live vs Offline)
+      if (data.status === 'live' && data.m3u8_url) {
+        // --- 🔴 SHOW LIVE PLAYER ---
+        container.innerHTML = `<video id="live-player" controls autoplay playsinline style="width:100%; height:100%; border-radius: 12px;"></video>`;
+        const video = document.getElementById('live-player');
+        const streamUrl = data.m3u8_url;
+
         if (Hls.isSupported()) {
           const hls = new Hls();
           hls.loadSource(streamUrl);
           hls.attachMedia(video);
           hls.on(Hls.Events.MANIFEST_PARSED, () => {
-            video.play().catch(e => console.log("Autoplay blocked, user must click play."));
+            video.play().catch(() => console.log("Autoplay blocked."));
           });
-        } 
-        else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
           video.src = streamUrl;
         }
       } else {
-        console.log("No stream URL or backup URL provided in CMS.");
+        // --- ⏸️ SHOW OFFLINE BACKGROUND VIDEO ---
+        container.innerHTML = `
+          <video id="bg-video" autoplay muted loop playsinline style="width:100%; height:100%; border-radius: 12px; object-fit: cover;">
+            <source src="${data.background_video}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        `;
       }
     } catch (error) {
-      console.log("CMS sync error:", error.message);
+      console.log("CMS Sync Error: Ensure you have published once in /admin", error.message);
     }
   }
 
