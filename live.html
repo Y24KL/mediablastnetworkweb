@@ -87,16 +87,28 @@
 <script>
 async function syncWithCMS() {
   const container = document.getElementById('media-container');
+  const liveIndicator = document.querySelector('.live-indicator');
+  const titleDisplay = document.getElementById('stream-title');
 
   try {
     const res = await fetch('/content/settings/livestream.json?ts=' + Date.now());
+    if (!res.ok) throw new Error("CMS file not found");
+
     const data = await res.json();
 
-    console.log("CMS DATA:", data); // 👈 DEBUG
+    console.log("CMS DATA:", data);
 
+    // Update title
+    if (data.title) titleDisplay.innerText = data.title;
+
+    // 🔴 LIVE MODE
     if (data.status === "live" && data.m3u8_url) {
+
+      liveIndicator.style.display = "inline-flex";
+
       container.innerHTML = `
-        <video id="live-player" controls autoplay playsinline style="width:100%; height:100%"></video>
+        <video id="live-player" controls autoplay playsinline
+          style="width:100%; height:100%; background:black; border-radius:12px;"></video>
       `;
 
       const video = document.getElementById('live-player');
@@ -110,22 +122,55 @@ async function syncWithCMS() {
       }
 
     } else {
-  console.log("OFFLINE MODE ACTIVATED");
 
-  container.innerHTML = `
-    <video id="bg-video" autoplay muted loop playsinline
-      style="width:100%; height:100%; object-fit:cover; background:black;">
-    </video>
-  `;
+      // ⏸️ OFFLINE MODE (VIDEO ONLY — NO IMAGE)
+      liveIndicator.style.display = "none";
 
-  const video = document.getElementById('bg-video');
+      container.innerHTML = `
+        <div style="position:relative; width:100%; height:100%;">
 
-  // 🔥 Load Cloudinary video
-  video.src = data.background_video;
+          <video id="bg-video" autoplay muted loop playsinline
+            style="width:100%; height:100%; object-fit:cover;">
+          </video>
 
-  // Ensure autoplay
-  video.muted = true;
-  video.play().catch(() => {
-    console.log("Autoplay blocked");
-  });
+          <div style="
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%, -50%);
+            color:white;
+            text-align:center;
+            background:rgba(0,0,0,0.4);
+            padding:20px 30px;
+            border-radius:12px;
+          ">
+            <h2>🔴 OFF AIR</h2>
+            <p>We’ll be live shortly</p>
+          </div>
+
+        </div>
+      `;
+
+      const video = document.getElementById('bg-video');
+
+      // 🔥 CLOUDINARY VIDEO LOAD
+      video.src = data.background_video;
+
+      video.play().catch(() => {
+        console.log("Autoplay blocked");
+      });
+    }
+
+  } catch (err) {
+    console.error("ERROR:", err);
+
+    container.innerHTML = `
+      <p style="color:white">⚠️ Failed to load stream</p>
+    `;
+  }
 }
+
+// Auto refresh every 10 seconds
+syncWithCMS();
+setInterval(syncWithCMS, 10000);
+</script>
