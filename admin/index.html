@@ -20,7 +20,7 @@ CMS.init({
       branch: 'main', 
       base_url: 'https://netlify-cms-github-oauth-provider-1piz.onrender.com'
     },
-    // This tells Decap exactly where to save your uploaded videos in GitHub
+    // This tells Decap exactly where to save your uploaded files in GitHub
     media_folder: 'public/images', 
     public_folder: '/public/images',
     collections: [
@@ -49,19 +49,21 @@ CMS.init({
                 label: "Stream Title", 
                 name: "title", 
                 widget: "string",
-                default: "Mediablasst Exclusive Feed"
+                default: "Mediablast Exclusive Feed"
               },
               { 
                 label: "Live m3u8 URL", 
                 name: "m3u8_url", 
                 widget: "string",
+                required: false,
                 hint: "The link for your live broadcast" 
               },
               { 
                 label: "Offline Background Video", 
                 name: "background_video", 
-                widget: "file",
-                hint: "Upload or select the video that plays while offline" 
+                widget: "string",
+                required: false,
+                hint: "Paste the URL of the .mp4 video that plays while offline (can be any link)" 
               },
             ]
           }
