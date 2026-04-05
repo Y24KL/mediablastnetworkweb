@@ -20,7 +20,7 @@ CMS.init({
       branch: 'main', 
       base_url: 'https://netlify-cms-github-oauth-provider-1piz.onrender.com'
     },
-    // This tells Decap exactly where to save your uploaded files in GitHub
+    // Videos will now be saved in public/images in your repository!
     media_folder: 'public/images', 
     public_folder: '/public/images',
     collections: [
@@ -61,9 +61,9 @@ CMS.init({
               { 
                 label: "Offline Background Video", 
                 name: "background_video", 
-                widget: "string",
+                widget: "file", // CHANGED BACK TO FILE WIDGET 👈
                 required: false,
-                hint: "Paste the URL of the .mp4 video that plays while offline (can be any link)" 
+                hint: "Upload an .mp4 video file from your device" 
               },
             ]
           }
