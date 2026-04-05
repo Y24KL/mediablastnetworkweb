@@ -18,6 +18,7 @@ collections:
         label: "Stream Configuration"
         name: "stream_config"
         fields:
-          - {label: "Stream URL", name: "stream_url", widget: "string", hint: "Paste your .m3u8 or universal link here"}
           - {label: "Is Live Now?", name: "is_live", widget: "boolean", default: false}
-          - {label: "Stream Title", name: "stream_title", widget: "string", default: "Mediablasst Exclusive Feed"}
+          - {label: "Stream URL", name: "stream_url", widget: "string", required: false, hint: "Paste your live .m3u8 or streaming link here"}
+          - {label: "Fallback Video URL", name: "fallback_video_url", widget: "string", required: false, hint: "Paste the URL of the .mp4 video to play in the background when offline"}
+          - {label: "Stream Title", name: "stream_title", widget: "string", default: "Mediablast Exclusive Feed"}
