@@ -14,28 +14,28 @@ collections:
     editor:
       preview: false
     files:
-      - file: "content/settings/livestream.json" # Ensure this path matches your fetch folder
+      - file: "data/links.json" # Match this to your code's fetch path
         label: "Stream Configuration"
         name: "stream_config"
         fields:
           - {label: "Status", name: "status", widget: "select", options: ["live", "offline"], default: "offline"}
           
-          - label: "YouTube Live Link"
-            name: "youtube_url"
+          - label: "YouTube Link"
+            name: "youtubeLink"
             widget: "string"
             required: false
-            hint: "Paste the YouTube watch link here (e.g., https://www.youtube.com/watch?v=...) - This takes priority if filled."
+            hint: "Paste YouTube URL here (e.g., https://www.youtube.com/watch?v=...). Priority #1."
 
-          - label: "Custom Stream (m3u8)"
-            name: "m3u8_url"
+          - label: "Live Stream URL"
+            name: "liveStream"
             widget: "string"
             required: false
-            hint: "Paste your live .m3u8 link here. Only used if YouTube link is empty."
+            hint: "Paste .m3u8 OR cLoveworld URLs here. Priority #2."
 
-          - label: "Fallback/Background Video"
-            name: "background_video"
+          - label: "Background Video (Offline)"
+            name: "heroVideo"
             widget: "string"
             required: false
-            hint: "Paste the Cloudinary .mp4 URL here (plays when status is offline)"
+            hint: "Paste Cloudinary .mp4 URL for background playback."
 
           - {label: "Stream Title", name: "stream_title", widget: "string", default: "Mediablast Exclusive Feed"}
