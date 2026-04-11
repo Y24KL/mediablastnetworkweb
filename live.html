@@ -1,182 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>LIVE | Mediablast Network</title>
-
 
     <link rel="icon" type="image/png" href="image/MEDIA BLAST.png?v=2">
     <link rel="stylesheet" href="style.css">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
     <style>
-
         .video-wrapper {
-
             background: #000;
-
             position: relative;
-
             overflow: hidden;
-
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-
             border: 1px solid rgba(255,255,255,0.1);
-
             aspect-ratio: 16 / 9;
-
         }
-
-
 
         #live-player, #bg-video {
-
             width: 100%;
-
             height: 100%;
-
             display: block;
-
         }
-
-
 
         .back-home {
-
             color: white;
-
             text-decoration: none;
-
             font-size: 14px;
-
             margin-left: 20px;
-
             padding: 8px 14px;
-
             border-radius: 20px;
-
             background: rgba(255,255,255,0.1);
-
             transition: 0.3s;
-
         }
-
-
 
         .back-home:hover { background: rgba(255,255,255,0.2); }
 
-
-
         .stats-pill {
-
             display: flex;
-
             align-items: center;
-
             gap: 6px;
-
             background: rgba(0,0,0,0.6);
-
             padding: 6px 12px;
-
             border-radius: 20px;
-
             font-size: 14px;
-
+            color: white;
         }
-
         
-
         .live-indicator {
-
             display: none;
-
             align-items: center;
-
             gap: 5px;
-
             color: #ff4d4d;
-
             font-weight: bold;
-
         }
 
+        #media-container iframe, #media-container video {
+            border-radius: 20px;
+        }
     </style>
-
 </head>
-
-
 
 <body class="live-theater-mode">
 
-
-
 <div id="live-content">
-
     <nav class="live-nav glass">
-
         <div class="logo">
-
             <a href="index.html">
-
                 <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" style="height: 40px;">
-
             </a>
-
         </div>
 
-
-
-        <div class="live-meta">
-
+        <div class="live-meta" style="display: flex; align-items: center; gap: 15px;">
             <span class="live-indicator">
-
                 <i class="fas fa-circle"></i> LIVE
-
             </span>
 
-
-            <a href="index.html" class="back-home">← Back to Home</a>
-
-        </div>
-
-    </nav>
-
-
-
-    <main class="live-compact-container">
-
-        <section class="video-section-compact">
-
-          <div id="media-container" style="width: 100%; max-width: 800px; aspect-ratio: 16/9; background: #000; border-radius: 20px; overflow: hidden; margin: 20px 0; position: relative;">
-    </div>
-
-<div class="live-indicator" style="display: none; align-items: center; gap: 8px;">
-    <span style="color: red;">●</span> LIVE
-</div>
-
-            <div class="video-details-compact">
-
-                <h1 id="stream-title">GRAND FINALE OF THE GLOBAL PRAYER AND FASTING WITH PASTOR CHRIS</h1>
-
+            <div class="stats-pill">
+                <i class="fas fa-eye"></i> <span id="viewerCount"></span>
             </div>
 
+            <a href="index.html" class="back-home">← Back to Home</a>
+        </div>
+    </nav>
+
+    <main class="live-compact-container">
+        <section class="video-section-compact">
+            <div id="media-container" style="width: 100%; max-width: 900px; aspect-ratio: 16/9; background: #000; border-radius: 20px; overflow: hidden; margin: 20px auto; position: relative;">
+                </div>
+
+            <div class="video-details-compact" style="text-align: center;">
+                <h1 id="stream-title" style="color: white; font-size: 1.5rem; margin-top: 15px;">Loading Stream...</h1>
+            </div>
         </section>
-
     </main>
-
 </div>
 
-
 <script>
-  // 1. Firebase Configuration & Presence Logic
+  // --- FIREBASE CONFIG ---
   const firebaseConfig = {
     apiKey: "AIzaSyDzDUQ1i_CPP_nL4aTefmKPADzM-UVcCt0",
     authDomain: "mbn-web-828e8.firebaseapp.com",
@@ -188,7 +115,7 @@
     measurementId: "G-FP2CCWHF13"
   };
 
-  // Initialize Firebase
+  // Initialize Firebase Presence
   if (typeof firebase !== 'undefined') {
       firebase.initializeApp(firebaseConfig);
       const database = firebase.database();
@@ -203,13 +130,10 @@
       });
 
       vCountRef.on('value', (snapshot) => {
-          if (viewerCountSpan) {
-            viewerCountSpan.innerText = snapshot.numChildren();
-          }
+          if (viewerCountSpan) viewerCountSpan.innerText = snapshot.numChildren();
       });
   }
 
-  // Helper: Extract YouTube ID
   function getYouTubeID(url) {
     if (!url) return null;
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
@@ -217,56 +141,49 @@
     return (match && match[2].length === 11) ? match[2] : null;
   }
 
-  // 2. CMS Sync Logic (YouTube + cLoveworld + M3U8 + Offline Video)
+  // --- CMS SYNC LOGIC ---
   async function syncWithCMS() {
     const container = document.getElementById('media-container');
     const liveIndicator = document.querySelector('.live-indicator');
+    const titleHeader = document.getElementById('stream-title');
 
     try {
-      // Path matches the data/links.json specified in your config.yml
       const res = await fetch('/data/links.json?nocache=' + new Date().getTime());
       if (!res.ok) throw new Error('Settings not found');
       const data = await res.json();
+
+      // Update Title from CMS
+      if (data.title) titleHeader.innerText = data.title;
 
       const ytId = getYouTubeID(data.youtubeLink);
       const streamUrl = data.liveStream || "";
       const isLive = data.status === "live";
 
-      // --- CHECK IF STATUS IS SET TO OFFLINE FIRST ---
       if (!isLive) {
         showOfflineMode(container, liveIndicator, data.heroVideo);
         return;
       }
 
-      // --- PRIORITY 1: YOUTUBE ---
+      // PRIORITY 1: YOUTUBE
       if (ytId) {
         liveIndicator.style.display = "inline-flex";
-        container.innerHTML = `
-          <iframe width="100%" height="100%" 
-            src="https://www.youtube.com/embed/${ytId}?autoplay=1&mute=0&rel=0" 
-            frameborder="0" allowfullscreen style="border-radius:20px;">
-          </iframe>`;
+        container.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${ytId}?autoplay=1&mute=0" frameborder="0" allowfullscreen></iframe>`;
       } 
       
-      // --- PRIORITY 2: CLOVEWORLD ---
+      // PRIORITY 2: CLOVEWORLD
       else if (streamUrl.includes("cloveworld.org")) {
         liveIndicator.style.display = "inline-flex";
-        // Automatically convert watch URL to the embeddable version
         const embedUrl = streamUrl.replace("news?v=", "news/embed?v=");
-        container.innerHTML = `
-          <iframe width="100%" height="100%" 
-            src="${embedUrl}" 
-            frameborder="0" allowfullscreen style="border-radius:20px;">
-          </iframe>`;
+        container.innerHTML = `<iframe width="100%" height="100%" src="${embedUrl}" frameborder="0" allowfullscreen></iframe>`;
       }
 
-      // --- PRIORITY 3: STANDARD M3U8 ---
+      // PRIORITY 3: M3U8
       else if (streamUrl.includes(".m3u8")) {
         liveIndicator.style.display = "inline-flex";
-        container.innerHTML = `<video id="live-player" controls autoplay playsinline style="width:100%; height:100%; border-radius:20px;"></video>`;
+        container.innerHTML = `<video id="live-player" controls autoplay playsinline style="width:100%; height:100%;"></video>`;
         const video = document.getElementById('live-player');
         
-        if (Hls.isSupported()) {
+        if (typeof Hls !== 'undefined' && Hls.isSupported()) {
           const hls = new Hls();
           hls.loadSource(streamUrl);
           hls.attachMedia(video);
@@ -275,24 +192,20 @@
           video.src = streamUrl;
         }
       } 
-      
-      // --- FALLBACK: IF NO LINKS BUT STATUS IS LIVE ---
       else {
         showOfflineMode(container, liveIndicator, data.heroVideo);
       }
 
     } catch (err) {
       console.error("CMS Sync Error:", err);
-      // Ensure container doesn't stay blank if the fetch fails
-      container.innerHTML = `<div style="color:white; text-align:center; padding-top:20%;">Connecting to feed...</div>`;
+      container.innerHTML = `<div style="color:white; text-align:center; padding-top:20%;">Connecting...</div>`;
     }
   }
 
-  // Helper function to handle Offline/Background UI
   function showOfflineMode(container, indicator, videoUrl) {
     if (indicator) indicator.style.display = "none";
     container.innerHTML = `
-      <div style="position: relative; width: 100%; height: 100%; border-radius: 20px; overflow: hidden;">
+      <div style="position: relative; width: 100%; height: 100%; overflow: hidden;">
           <video id="bg-video" autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover;">
             <source src="${videoUrl}" type="video/mp4">
           </video>
@@ -304,8 +217,7 @@
 
     const v = document.getElementById('bg-video');
     const btn = document.getElementById('volume-toggle');
-    if (v) {
-        v.load();
+    if (v && btn) {
         btn.addEventListener('click', () => {
             v.muted = !v.muted;
             btn.innerText = v.muted ? 'Unmute Sound' : 'Mute Audio';
@@ -313,6 +225,8 @@
     }
   }
 
-  // Initial Run
   syncWithCMS();
 </script>
+
+</body>
+</html>
