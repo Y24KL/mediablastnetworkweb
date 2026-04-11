@@ -197,7 +197,7 @@
   if (typeof firebase !== 'undefined') {
       firebase.initializeApp(firebaseConfig);
       const database = firebase.database();
-      const viewerCountSpan = document.getElementById('viewerCount'); // Ensure this ID exists in your HTML
+      const viewerCountSpan = document.getElementById('viewerCount'); 
       const vCountRef = database.ref('liveViewers');
 
       database.ref('.info/connected').on('value', (snapshot) => {
@@ -222,21 +222,28 @@
     return (match && match[2].length === 11) ? match[2] : null;
   }
 
-  // 2. CMS Sync Logic (YouTube + M3U8 + Offline Video)
+  // 2. CMS Sync Logic (YouTube + cLoveworld + M3U8 + Offline Video)
   async function syncWithCMS() {
     const container = document.getElementById('media-container');
     const liveIndicator = document.querySelector('.live-indicator');
 
     try {
-      // Path to your Decap CMS JSON file
+      // Path matches the data/links.json specified in your config.yml
       const res = await fetch('/data/links.json?nocache=' + new Date().getTime());
       if (!res.ok) throw new Error('Settings not found');
       const data = await res.json();
 
       const ytId = getYouTubeID(data.youtubeLink);
-      const m3u8 = data.liveStream;
+      const streamUrl = data.liveStream || "";
+      const isLive = data.status === "live";
 
-      // --- CASE 1: YOUTUBE IS ACTIVE ---
+      // --- CHECK IF STATUS IS SET TO OFFLINE FIRST ---
+      if (!isLive) {
+        showOfflineMode(container, liveIndicator, data.heroVideo);
+        return;
+      }
+
+      // --- PRIORITY 1: YOUTUBE ---
       if (ytId) {
         liveIndicator.style.display = "inline-flex";
         container.innerHTML = `
@@ -246,54 +253,71 @@
           </iframe>`;
       } 
       
-      // --- CASE 2: M3U8 IS ACTIVE (If YouTube is empty) ---
-      else if (m3u8 && m3u8.trim() !== "") {
+      // --- PRIORITY 2: CLOVEWORLD ---
+      else if (streamUrl.includes("cloveworld.org")) {
+        liveIndicator.style.display = "inline-flex";
+        // Automatically convert watch URL to the embeddable version
+        const embedUrl = streamUrl.replace("news?v=", "news/embed?v=");
+        container.innerHTML = `
+          <iframe width="100%" height="100%" 
+            src="${embedUrl}" 
+            frameborder="0" allowfullscreen style="border-radius:20px;">
+          </iframe>`;
+      }
+
+      // --- PRIORITY 3: STANDARD M3U8 ---
+      else if (streamUrl.includes(".m3u8")) {
         liveIndicator.style.display = "inline-flex";
         container.innerHTML = `<video id="live-player" controls autoplay playsinline style="width:100%; height:100%; border-radius:20px;"></video>`;
         const video = document.getElementById('live-player');
         
         if (Hls.isSupported()) {
           const hls = new Hls();
-          hls.loadSource(m3u8);
+          hls.loadSource(streamUrl);
           hls.attachMedia(video);
           hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
         } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-          video.src = m3u8;
+          video.src = streamUrl;
         }
       } 
       
-      // --- CASE 3: OFFLINE MODE (Background Video) ---
+      // --- FALLBACK: IF NO LINKS BUT STATUS IS LIVE ---
       else {
-        liveIndicator.style.display = "none";
-        container.innerHTML = `
-          <div style="position: relative; width: 100%; height: 100%; border-radius: 20px; overflow: hidden;">
-              <video id="bg-video" autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover;">
-                <source src="${data.heroVideo}" type="video/mp4">
-              </video>
-              <button id="volume-toggle" style="position: absolute; bottom: 20px; right: 20px; z-index: 10; background: rgba(0,0,0,0.6); color: white; border: 1px solid white; padding: 10px 15px; border-radius: 25px; cursor: pointer;">
-                  Unmute Sound
-              </button>
-          </div>
-        `;
-
-        const v = document.getElementById('bg-video');
-        const btn = document.getElementById('volume-toggle');
-        
-        if (v) {
-            v.load();
-            if (btn) {
-                btn.addEventListener('click', () => {
-                    v.muted = !v.muted;
-                    btn.innerText = v.muted ? 'Unmute Sound' : 'Mute Audio';
-                });
-            }
-        }
+        showOfflineMode(container, liveIndicator, data.heroVideo);
       }
+
     } catch (err) {
       console.error("CMS Sync Error:", err);
+      // Ensure container doesn't stay blank if the fetch fails
+      container.innerHTML = `<div style="color:white; text-align:center; padding-top:20%;">Connecting to feed...</div>`;
     }
   }
 
-  // Run the sync
+  // Helper function to handle Offline/Background UI
+  function showOfflineMode(container, indicator, videoUrl) {
+    if (indicator) indicator.style.display = "none";
+    container.innerHTML = `
+      <div style="position: relative; width: 100%; height: 100%; border-radius: 20px; overflow: hidden;">
+          <video id="bg-video" autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover;">
+            <source src="${videoUrl}" type="video/mp4">
+          </video>
+          <button id="volume-toggle" style="position: absolute; bottom: 20px; right: 20px; z-index: 10; background: rgba(0,0,0,0.6); color: white; border: 1px solid white; padding: 10px 15px; border-radius: 25px; cursor: pointer;">
+              Unmute Sound
+          </button>
+      </div>
+    `;
+
+    const v = document.getElementById('bg-video');
+    const btn = document.getElementById('volume-toggle');
+    if (v) {
+        v.load();
+        btn.addEventListener('click', () => {
+            v.muted = !v.muted;
+            btn.innerText = v.muted ? 'Unmute Sound' : 'Mute Audio';
+        });
+    }
+  }
+
+  // Initial Run
   syncWithCMS();
 </script>
