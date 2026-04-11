@@ -180,12 +180,8 @@
 </div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-<script src="https://unpkg.com/firebase@9.6.10/firebase-app-compat.js"></script>
-<script src="https://unpkg.com/firebase@9.6.10/firebase-database-compat.js"></script>
-
 <script>
-  // 1. Firebase Configuration
+  // 1. Firebase Configuration & Presence Logic
   const firebaseConfig = {
     apiKey: "AIzaSyDzDUQ1i_CPP_nL4aTefmKPADzM-UVcCt0",
     authDomain: "mbn-web-828e8.firebaseapp.com",
@@ -197,11 +193,11 @@
     measurementId: "G-FP2CCWHF13"
   };
 
-  // Initialize Firebase and Presence
+  // Initialize Firebase
   if (typeof firebase !== 'undefined') {
       firebase.initializeApp(firebaseConfig);
       const database = firebase.database();
-      const viewerCountSpan = document.getElementById('viewerCount');
+      const viewerCountSpan = document.getElementById('viewerCount'); // Ensure this ID exists in your HTML
       const vCountRef = database.ref('liveViewers');
 
       database.ref('.info/connected').on('value', (snapshot) => {
@@ -212,37 +208,67 @@
       });
 
       vCountRef.on('value', (snapshot) => {
-          viewerCountSpan.innerText = snapshot.numChildren();
+          if (viewerCountSpan) {
+            viewerCountSpan.innerText = snapshot.numChildren();
+          }
       });
   }
 
-  // 2. CMS Sync Logic
+  // Helper: Extract YouTube ID
+  function getYouTubeID(url) {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  }
+
+  // 2. CMS Sync Logic (YouTube + M3U8 + Offline Video)
   async function syncWithCMS() {
     const container = document.getElementById('media-container');
     const liveIndicator = document.querySelector('.live-indicator');
 
     try {
-      const res = await fetch('/content/settings/livestream.json?nocache=' + new Date().getTime());
+      // Path to your Decap CMS JSON file
+      const res = await fetch('/data/links.json?nocache=' + new Date().getTime());
       if (!res.ok) throw new Error('Settings not found');
       const data = await res.json();
 
-      if (data.status === "live") {
-        // LIVE MODE
+      const ytId = getYouTubeID(data.youtubeLink);
+      const m3u8 = data.liveStream;
+
+      // --- CASE 1: YOUTUBE IS ACTIVE ---
+      if (ytId) {
         liveIndicator.style.display = "inline-flex";
-        container.innerHTML = `<video id="live-player" controls autoplay playsinline style="width:100%; height:100%;"></video>`;
+        container.innerHTML = `
+          <iframe width="100%" height="100%" 
+            src="https://www.youtube.com/embed/${ytId}?autoplay=1&mute=0&rel=0" 
+            frameborder="0" allowfullscreen style="border-radius:20px;">
+          </iframe>`;
+      } 
+      
+      // --- CASE 2: M3U8 IS ACTIVE (If YouTube is empty) ---
+      else if (m3u8 && m3u8.trim() !== "") {
+        liveIndicator.style.display = "inline-flex";
+        container.innerHTML = `<video id="live-player" controls autoplay playsinline style="width:100%; height:100%; border-radius:20px;"></video>`;
         const video = document.getElementById('live-player');
+        
         if (Hls.isSupported()) {
           const hls = new Hls();
-          hls.loadSource(data.m3u8_url);
+          hls.loadSource(m3u8);
           hls.attachMedia(video);
+          hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = m3u8;
         }
-      } else {
-        // OFFLINE MODE
+      } 
+      
+      // --- CASE 3: OFFLINE MODE (Background Video) ---
+      else {
         liveIndicator.style.display = "none";
         container.innerHTML = `
-          <div style="position: relative; width: 100%; height: 100%;">
+          <div style="position: relative; width: 100%; height: 100%; border-radius: 20px; overflow: hidden;">
               <video id="bg-video" autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover;">
-                <source src="${data.background_video}" type="video/mp4">
+                <source src="${data.heroVideo}" type="video/mp4">
               </video>
               <button id="volume-toggle" style="position: absolute; bottom: 20px; right: 20px; z-index: 10; background: rgba(0,0,0,0.6); color: white; border: 1px solid white; padding: 10px 15px; border-radius: 25px; cursor: pointer;">
                   Unmute Sound
@@ -255,8 +281,6 @@
         
         if (v) {
             v.load();
-            v.play().catch(e => console.log("Autoplay waiting for user..."));
-            
             if (btn) {
                 btn.addEventListener('click', () => {
                     v.muted = !v.muted;
@@ -270,6 +294,6 @@
     }
   }
 
-  // Initial Run
+  // Run the sync
   syncWithCMS();
 </script>
