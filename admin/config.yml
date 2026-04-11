@@ -10,15 +10,32 @@ public_folder: "image"
 collections:
   - name: "settings"
     label: "Site Settings"
-    delete: false # Prevents accidental deletion of your settings
+    delete: false 
     editor:
       preview: false
     files:
-      - file: "settings.json"
+      - file: "content/settings/livestream.json" # Ensure this path matches your fetch folder
         label: "Stream Configuration"
         name: "stream_config"
         fields:
-          - {label: "Is Live Now?", name: "is_live", widget: "boolean", default: false}
-          - {label: "Stream URL", name: "stream_url", widget: "string", required: false, hint: "Paste your live .m3u8 or streaming link here"}
-          - {label: "Fallback Video URL", name: "fallback_video_url", widget: "string", required: false, hint: "Paste the URL of the .mp4 video to play in the background when offline"}
+          - {label: "Status", name: "status", widget: "select", options: ["live", "offline"], default: "offline"}
+          
+          - label: "YouTube Live Link"
+            name: "youtube_url"
+            widget: "string"
+            required: false
+            hint: "Paste the YouTube watch link here (e.g., https://www.youtube.com/watch?v=...) - This takes priority if filled."
+
+          - label: "Custom Stream (m3u8)"
+            name: "m3u8_url"
+            widget: "string"
+            required: false
+            hint: "Paste your live .m3u8 link here. Only used if YouTube link is empty."
+
+          - label: "Fallback/Background Video"
+            name: "background_video"
+            widget: "string"
+            required: false
+            hint: "Paste the Cloudinary .mp4 URL here (plays when status is offline)"
+
           - {label: "Stream Title", name: "stream_title", widget: "string", default: "Mediablast Exclusive Feed"}
