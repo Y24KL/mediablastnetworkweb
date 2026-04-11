@@ -12,76 +12,83 @@
   <body>
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
     <script>
-CMS.init({
-  config: {
-    backend: {
-      name: 'github',
-      repo: 'Y24KL/mediablastnetworkweb',
-      branch: 'main', 
-      base_url: 'https://netlify-cms-github-oauth-provider-1piz.onrender.com'
-    },
-    // Videos will now be saved in public/images in your repository!
-    media_folder: 'public/images', 
-    public_folder: '/public/images',
-    collections: [
-      {
-        name: "livestream",
-        label: "📺 Livestream Manager",
-        delete: false,
-        editor: { preview: false },
-        files: [
-          {
-            name: "stream_config",
-            label: "Stream Status & Links",
-            file: "content/settings/livestream.json",
-            fields: [
-              {
-                label: "Current Site Status",
-                name: "status",
-                widget: "select",
-                options: [
-                  { label: "🔴 Live Now (Show m3u8)", value: "live" },
-                  { label: "⏸️ Offline (Show Background Video)", value: "offline" }
-                ],
-                default: "offline"
-              },
-              { 
-                label: "Stream Title", 
-                name: "title", 
-                widget: "string",
-                default: "Mediablast Exclusive Feed"
-              },
-              { 
-                label: "Live m3u8 URL", 
-                name: "m3u8_url", 
-                widget: "string",
-                required: false,
-                hint: "The link for your live broadcast" 
-              },
-              { 
-                label: "Offline Background Video", 
-                name: "background_video", 
-                widget: "file", // CHANGED BACK TO FILE WIDGET 👈
-                required: false,
-                hint: "Upload an .mp4 video file from your device" 
-              },
-            ]
-          }
-        ]
-      },
-      {
-        name: 'blog',
-        label: 'Blog',
-        folder: 'content/blog',
-        create: true,
-        fields: [
-          { label: 'Title', name: 'title', widget: 'string' },
-          { label: 'Body', name: 'body', widget: 'markdown' }
-        ]
-      }
-    ]
-  }
-});
+      CMS.init({
+        config: {
+          backend: {
+            name: 'github',
+            repo: 'Y24KL/mediablastnetworkweb',
+            branch: 'main', 
+            base_url: 'https://netlify-cms-github-oauth-provider-1piz.onrender.com'
+          },
+          media_folder: 'public/images', 
+          public_folder: '/public/images',
+          collections: [
+            {
+              name: "livestream",
+              label: "📺 Livestream Manager",
+              delete: false,
+              editor: { preview: false },
+              files: [
+                {
+                  name: "stream_config",
+                  label: "Stream Status & Links",
+                  // Updated path to resolve the 404 error seen in your logs
+                  file: "data/links.json", 
+                  fields: [
+                    {
+                      label: "Current Site Status",
+                      name: "status",
+                      widget: "select",
+                      options: [
+                        { label: "🔴 Live Now", value: "live" },
+                        { label: "⏸️ Offline", value: "offline" }
+                      ],
+                      default: "offline"
+                    },
+                    { 
+                      label: "YouTube Link", 
+                      name: "youtubeLink", 
+                      widget: "string",
+                      required: false,
+                      hint: "Paste YouTube URL (Priority #1)" 
+                    },
+                    { 
+                      label: "Live Stream URL (m3u8 or cLoveworld)", 
+                      name: "liveStream", 
+                      widget: "string",
+                      required: false,
+                      hint: "Paste .m3u8 or cLoveworld link (Priority #2)" 
+                    },
+                    { 
+                      label: "Offline Background Video", 
+                      name: "heroVideo", 
+                      widget: "file",
+                      required: false,
+                      hint: "Upload or paste Cloudinary URL for offline background" 
+                    },
+                    { 
+                      label: "Stream Title", 
+                      name: "title", 
+                      widget: "string",
+                      default: "Mediablast Exclusive Feed"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              name: 'blog',
+              label: 'Blog',
+              folder: 'content/blog',
+              create: true,
+              fields: [
+                { label: 'Title', name: 'title', widget: 'string' },
+                { label: 'Body', name: 'body', widget: 'markdown' }
+              ]
+            }
+          ]
+        }
+      });
     </script>
   </body>
 </html>
