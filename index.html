@@ -363,37 +363,27 @@ body.dark-theme .contact-form textarea {
   line-height: 1.5;
 }
 
-        /* ==================== HAMBURGER SIMPLE ==================== */
+/* FORCE hamburger to show */
 .menu-toggle {
-    display: none;
+    display: block !important; /* force visibility */
+    font-size: 28px;
+    color: #000 !important; /* make sure it's visible in light mode */
     background: none;
     border: none;
-    font-size: 1.8rem;
     cursor: pointer;
-    color: inherit;
+    z-index: 2000;
 }
 
-/* Mobile behavior */
-@media (max-width: 768px) {
-    .menu-toggle {
-        display: block;
-    }
+/* Position it properly */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 70px;
-        right: 20px;
-        background: #ffffff;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-    }
-
-    .nav-links.active {
-        display: flex;
-    }
+/* Push icon to right */
+.menu-toggle {
+    margin-left: auto;
 }
     </style>
 </head>
@@ -407,15 +397,11 @@ body.dark-theme .contact-form textarea {
 
    <nav class="navbar glass sticky">
     <a href="#home" class="logo-link">
-        <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="nav-logo-img">
+        <img src="image/MEDIA BLAST.png" class="nav-logo-img">
     </a>
 
-    <!-- Hamburger Icon -->
-    <button class="menu-toggle" id="menu-toggle">
-        <i class="fas fa-bars"></i>
-    </button>
+    <button class="menu-toggle">MENU</button>
 
-    <!-- Existing Menu -->
     <ul class="nav-links" id="nav-links">
         <li><a href="index.html">Home</a></li>
         <li><a href="live.html">Live TV</a></li>
