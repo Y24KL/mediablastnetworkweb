@@ -362,6 +362,78 @@ body.dark-theme .contact-form textarea {
   color: #a0aec0;
   line-height: 1.5;
 }
+
+/* ==================== COLLAPSIBLE NAVBAR STYLES ==================== */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+}
+
+.mobile-menu-toggle {
+    display: none; /* Hidden on desktop */
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.nav-theme-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 10px;
+}
+
+/* Responsive Logic */
+@media (max-width: 992px) {
+    .mobile-menu-toggle {
+        display: block;
+    }
+
+    .nav-wrapper {
+        position: fixed;
+        top: 0;
+        right: -100%; /* Hidden off-screen */
+        width: 70%;
+        height: 100vh;
+        background: inherit; /* Keeps the glass effect */
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: -10px 0 30px rgba(0,0,0,0.2);
+    }
+
+    .nav-wrapper.active {
+        right: 0; /* Slide in */
+    }
+
+    .nav-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+        display: flex;
+    }
+    
+    .nav-links li {
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-links a {
+        font-size: 1.2rem;
+        font-weight: 600;
+        display: block;
+    }
+}  
     </style>
 </head>
 <body class="light-theme">
@@ -373,18 +445,25 @@ body.dark-theme .contact-form textarea {
     </div>
 
     <nav class="navbar glass sticky">
-        <a href="#home" class="logo-link">
-            <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="nav-logo-img">
-        </a>
-        
+    <a href="#home" class="logo-link">
+        <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="nav-logo-img">
+    </a>
+    
+    <button class="mobile-menu-toggle" id="menu-toggle" aria-label="Open Menu">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="nav-wrapper" id="nav-wrapper">
         <ul class="nav-links">
             <li><a href="index.html">Home</a></li>
             <li><a href="live.html">Live TV</a></li>
             <li><a href="programs.html">Programs</a></li>
             <li><a href="news.html">News</a></li>
             <li><a href="#contact">Contact</a></li>
+            <li><button id="theme-toggle" class="nav-theme-btn"><i class="fas fa-moon"></i></button></li>
         </ul>
-    </nav>
+    </div>
+</nav>
             <button id="theme-toggle" title="Toggle Mode"></button>
 
     <header id="home" class="hero">
@@ -584,6 +663,51 @@ body.dark-theme .contact-form textarea {
                 themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
             }
         });
-    </script>
+
+        <script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const navWrapper = document.getElementById('nav-wrapper');
+    const navLinks = document.querySelectorAll('.nav-links a');
+
+    // 1. Toggle Mobile Menu
+    menuToggle.addEventListener('click', () => {
+        navWrapper.classList.toggle('active');
+        // Change icon between Bars and X
+        const icon = menuToggle.querySelector('i');
+        icon.classList.toggle('fa-bars');
+        icon.classList.toggle('fa-times');
+    });
+
+    // 2. Close Menu when a link is clicked
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            navWrapper.classList.remove('active');
+            menuToggle.querySelector('i').classList.add('fa-bars');
+            menuToggle.querySelector('i').classList.remove('fa-times');
+        });
+    });
+
+    // 3. Updated Theme Toggle (Matches the new HTML structure)
+    const themeBtn = document.getElementById('theme-toggle');
+    const body = document.body;
+
+    themeBtn.addEventListener('click', () => {
+        if (body.classList.contains('light-theme')) {
+            body.classList.replace('light-theme', 'dark-theme');
+            themeBtn.innerHTML = '<i class="fas fa-sun"></i>';
+        } else {
+            body.classList.replace('dark-theme', 'light-theme');
+            themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
+        }
+    });
+
+    // Social Float Logic (Existing)
+    const socialTrigger = document.querySelector('.social-trigger');
+    const socialFloat = document.querySelector('.social-float');
+    socialTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        socialFloat.classList.toggle('active');
+    });
+</script>
 </body>
 </html>
