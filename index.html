@@ -10,17 +10,25 @@
     <link rel="stylesheet" href="style.css">
     
     <style>
-<style>
         /* ==================== GLOBAL RESTORATION ==================== */
         body {
-            background-color: #141414 !important; /* Deep dark background */
-            color: #e0e0e0 !important; /* Light text for visibility */
+            background-color: #141414 !important;
+            color: #e0e0e0 !important;
             margin: 0;
             font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
         }
 
-        h1, h2, h3, h4, p, span:not(.live-indicator) {
+        /* Force visibility for all text elements */
+        h1, h2, h3, h4, h5, h6, p, span, label, li, a {
             color: #ffffff !important;
+        }
+
+        .gradient-text {
+            background: linear-gradient(45deg, #ff4d4d, #f9cb28);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
         }
 
         .glass {
@@ -37,9 +45,12 @@
             align-items: center;
             padding: 15px 5%;
             z-index: 1000;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            box-sizing: border-box;
         }
 
-        /* The Menu Button - Always Visible */
         .menu-toggle {
             display: flex !important;
             background: rgba(255, 255, 255, 0.1);
@@ -52,11 +63,10 @@
             z-index: 1100;
         }
 
-        /* The Hidden Menu Drawer */
         .nav-wrapper {
             position: fixed;
             top: 0;
-            right: -100%; /* Hidden off-screen */
+            right: -100%;
             width: 300px;
             height: 100vh;
             background: #000000;
@@ -69,7 +79,7 @@
         }
 
         .nav-wrapper.active {
-            right: 0; /* Slide in */
+            right: 0;
         }
 
         .nav-links {
@@ -83,9 +93,9 @@
 
         .nav-links a {
             text-decoration: none;
-            color: white !important;
             font-size: 1.3rem;
             font-weight: 600;
+            transition: 0.3s;
         }
 
         .nav-links a:hover {
@@ -94,19 +104,18 @@
 
         /* Hide the old theme toggle styles */
         #theme-toggle { display: none !important; }
+
+        /* Ensure hero content is visible */
+        .hero {
+            position: relative;
+            padding-top: 100px;
+        }
     </style>
 </head>
 <body class="dark-theme">
-    <div id="loader">
-        <div class="loader-content">
-            <div class="spinner"></div>
-           <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="loader-logo">
-        </div>
-    </div>
-
     <nav class="navbar glass sticky">
         <a href="#home" class="logo-link">
-            <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="nav-logo-img">
+            <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="nav-logo-img" style="height: 40px;">
         </a>
         
         <button class="menu-toggle" id="menu-toggle">
@@ -127,9 +136,7 @@
     <header id="home" class="hero">
         <video autoplay muted loop class="hero-video">
             <source src="videos/LOVEWORLD WORSHIP APP PROMO.mp4" type="video/mp4">
-            Your browser does not support the video tag.
         </video>
-        
         <div class="hero-overlay"></div>
         <div class="hero-content reveal">
             <h1>Reaching <br><span class="gradient-text">Every World</span></h1>
@@ -145,9 +152,9 @@
         <div class="container">
             <div class="teaser-glass glass">
                 <div class="teaser-content">
-                    <span class="live-indicator"><span class="pulse-dot"></span>UPCOMING</span>
+                    <span class="live-indicator">UPCOMING</span>
                     <h2>TESTIMONIES OF PRAISE</h2>
-                    <p>You can’t afford to miss tonight’s special episode of Testimonies of Praise, we have lots testimonies from the Loveworld Songs to share with you. Don’t miss it!</p>
+                    <p>You can’t afford to miss tonight’s special episode of Testimonies of Praise. Don’t miss it!</p>
                     <a href="live.html" class="btn btn-primary">Watch Live</a>
                 </div>
                 <div class="teaser-preview">
@@ -157,182 +164,55 @@
         </div>
     </section>
 
-<section id="programs" class="programs-section reveal">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Trending <span class="gradient-text">Programs</span></h2>
-            <a href="programs.html" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
-        </div>
-
-        <div class="program-carousel">
-            <a href="programs.html" class="program-card-link">
-                <div class="program-card glass">
-                    <div class="card-img" style="background-image: url('image/image_1777225763.jpg')">
-                        <span class="live-tag">LIVE</span>
-                    </div>
-                    <div class="card-body">
-                        <h3>TESTIMONIES OF PRAISE</h3>
-                        <p>You can’t afford to miss tonight’s special episode of Testimonies of Praise, we have lots testimonies from the Loveworld Songs to share with you. Don’t miss it!</p>
-                    </div>
-                </div>
-            </a>
-            
-            <a href="programs.html" class="program-card-link">
-                <div class="program-card glass">
-                    <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1504711432869-5d592f239cff?auto=format&fit=crop&q=60&w=800')"></div>
-                    <div class="card-body">
-                        <h3>The News Blast</h3>
-                        <p>Rapid-fire global updates, delivered unfiltered.</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="programs.html" class="program-card-link">
-                <div class="program-card glass">
-                    <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=60&w=800')"></div>
-                    <div class="card-body">
-                        <h3>Mediablast Specials</h3>
-                        <p>Exclusive documentaries and cinematic stories.</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="programs.html" class="program-card-link">
-                <div class="program-card glass">
-                    <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=60&w=800')"></div>
-                    <div class="card-body">
-                        <h3>Midnight Vibes</h3>
-                        <p>Late-night sets from top digital artists.</p>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </div>
-</section>
-
-    <section id="blog" class="blog-section reveal">
+    <section id="contact" class="contact-section reveal">
         <div class="container">
-            <h2 class="section-title">Inside <span class="gradient-text">Mediablast</span></h2>
-            <div class="filter-controls glass">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="blogSearch" placeholder="Search news articles...">
+            <div class="contact-grid glass">
+                <div class="contact-info">
+                    <h2 class="gradient-text">Contact Us</h2>
+                    <p>Our newsroom is open 24/7.</p>
+                    <div class="info-details">
+                        <div class="info-item"><i class="fas fa-envelope"></i><span>@mediablastnetwork</span></div>
+                        <div class="info-item"><i class="fas fa-map-marker-alt"></i><span>Asese, Maba</span></div>
+                    </div>
                 </div>
-                <div class="filter-btns">
-                    <button class="filter-btn active" data-filter="all">All</button>
-                    <button class="filter-btn" data-filter="tech">Tech</button>
-                    <button class="filter-btn" data-filter="media">Media</button>
-                </div>
+                <form action="https://formspree.io/f/meepelvp" method="POST" id="contactForm" class="contact-form">
+                    <div class="form-group"><label>Name</label><input type="text" name="name" required></div>
+                    <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
+                    <div class="form-group"><label>Message</label><textarea name="message" rows="4" required></textarea></div>
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
             </div>
-            <div class="blog-grid" id="blogGrid"></div>
         </div>
     </section>
 
-    <div class="social-float">
-        <div class="social-trigger"><i class="fas fa-plus"></i></div>
-        <div class="social-icons">
-            <a href="https://kingschat.online/user/mediablastnetwork" class="social-link kc-link" target="_blank" rel="noopener noreferrer">
-                <img src="image/Kc.png" alt="KingsChat" class="custom-soc-icon">
-            </a>
-            <a href="https://x.com/mediablastnet?s=20" class="social-link" target="_blank" rel="noopener noreferrer" title="Twitter"><i class="fab fa-twitter"></i></a>
-            <a href="https://youtube.com/@mediablastnetwork" class="social-link" target="_blank" rel="noopener noreferrer" title="YouTube"><i class="fab fa-youtube"></i></a>
-        </div>
-    </div>
-<section id="contact" class="contact-section reveal">
-    <div class="container">
-        <div class="contact-grid glass">
-            
-            <div class="contact-info">
-                <h2 class="gradient-text">Contact Us</h2>
-                <p>Have a tip, a story, or a partnership inquiry? Our newsroom is open 24/7.</p>
-                <div class="info-details">
-                    <div class="info-item">
-                        <i class="fas fa-envelope"></i>
-                        <span>@mediablastnetwork</span>
-                    </div>
-                    <div class="info-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>Asese, Maba</span>
-                    </div>
-                </div>
-                <div class="contact-socials">
-                    <a href="https://x.com/mediablastnet" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
-                    <a href="https://kingschat.online/user/mediablastnetwork" target="_blank" rel="noopener noreferrer">
-                        <img src="image/Kc.png" alt="KingsChat" class="contact-kc-icon">
-                    </a>
-                    <a href="https://youtube.com/@mediablastnetwork" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
-                </div>
-            </div>
-
-            <form action="https://formspree.io/f/meepelvp" method="POST" id="contactForm" class="contact-form">
-                <div class="form-group">
-                    <label>Name</label>
-                    <input type="text" name="name" placeholder="Enter your full name" required>
-                </div>
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" name="email" placeholder="your@email.com" required>
-                </div>
-                <div class="form-group">
-                    <label>How can we help?</label>
-                    <textarea name="message" placeholder="Message" required rows="4"></textarea>
-                </div>
-                <button type="submit" class="submit-btn">
-                    Send Message
-                </button>
-                <p id="form-status"></p>
-            </form>
-
-        </div>
-    </div>
-</section>
-
     <script src="script.js"></script>
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const navWrapper = document.getElementById('nav-wrapper');
+        const menuIcon = menuToggle.querySelector('i');
 
-  <script>
-    // 1. Menu Toggle Logic
-    const menuToggle = document.getElementById('menu-toggle');
-    const navWrapper = document.getElementById('nav-wrapper');
-    const menuIcon = menuToggle.querySelector('i');
-
-    menuToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        navWrapper.classList.toggle('active');
-        
-        // Swap icon between Hamburger and X
-        menuIcon.classList.toggle('fa-bars');
-        menuIcon.classList.toggle('fa-times');
-    });
-
-    // 2. Close menu when clicking a link
-    document.querySelectorAll('.nav-links a').forEach(link => {
-        link.addEventListener('click', () => {
-            navWrapper.classList.remove('active');
-            menuIcon.classList.add('fa-bars');
-            menuIcon.classList.remove('fa-times');
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            navWrapper.classList.toggle('active');
+            menuIcon.classList.toggle('fa-bars');
+            menuIcon.classList.toggle('fa-times');
         });
-    });
 
-    // 3. Social Float Logic (Existing)
-    const socialTrigger = document.querySelector('.social-trigger');
-    const socialFloat = document.querySelector('.social-float');
-    
-    socialTrigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        socialFloat.classList.toggle('active');
-    });
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navWrapper.classList.remove('active');
+                menuIcon.classList.add('fa-bars');
+                menuIcon.classList.remove('fa-times');
+            });
+        });
 
-    // Global click listener to close menus when clicking outside
-    document.addEventListener('click', (e) => {
-        if (navWrapper.classList.contains('active') && !navWrapper.contains(e.target) && !menuToggle.contains(e.target)) {
-            navWrapper.classList.remove('active');
-            menuIcon.classList.add('fa-bars');
-            menuIcon.classList.remove('fa-times');
-        }
-        if (!socialFloat.contains(e.target)) {
-            socialFloat.classList.remove('active');
-        }
-    });
-</script>
+        document.addEventListener('click', (e) => {
+            if (!navWrapper.contains(e.target) && !menuToggle.contains(e.target)) {
+                navWrapper.classList.remove('active');
+                menuIcon.classList.add('fa-bars');
+                menuIcon.classList.remove('fa-times');
+            }
+        });
+    </script>
 </body>
 </html>
