@@ -129,7 +129,7 @@
     </div>
 
 <script>
- // --- FIREBASE CONFIG ---
+// --- FIREBASE CONFIG ---
 const firebaseConfig = {
     apiKey: "AIzaSyDzDUQ1i_CPP_nL4aTefmKPADzM-UVcCt0",
     authDomain: "mbn-web-828e8.firebaseapp.com",
@@ -142,10 +142,18 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+if (typeof firebase !== 'undefined') {
+    firebase.initializeApp(firebaseConfig);
+    console.log("✅ Firebase Initialized");
+} else {
+    console.error("❌ Firebase script not loaded! Check your <script> tags in <head>");
+}
+
 const database = firebase.database();
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("🚀 Page Loaded, initializing modal logic...");
+
     const overlay = document.getElementById('pre-stream-overlay');
     const form = document.getElementById('viewer-form');
     const nameInput = document.getElementById('viewer-name');
@@ -153,51 +161,77 @@ document.addEventListener('DOMContentLoaded', () => {
     const stepUp = document.getElementById('step-up');
     const stepDown = document.getElementById('step-down');
 
+    if (!overlay || !form) {
+        console.error("❌ Modal elements not found in DOM. Check your HTML IDs.");
+        return;
+    }
+
     // Load saved name
     if(localStorage.getItem('mbn_name')) nameInput.value = localStorage.getItem('mbn_name');
 
     // Stepper logic
-    stepUp.onclick = () => countInput.value = parseInt(countInput.value) + 1;
-    stepDown.onclick = () => { if(countInput.value > 1) countInput.value = parseInt(countInput.value) - 1; };
+    stepUp.onclick = () => {
+        countInput.value = parseInt(countInput.value) + 1;
+    };
+    stepDown.onclick = () => { 
+        if(parseInt(countInput.value) > 1) countInput.value = parseInt(countInput.value) - 1; 
+    };
 
     // Form Submission
     form.onsubmit = async (e) => {
         e.preventDefault();
+        console.log("📩 Form submitted. Attempting to save to Firebase...");
+        
         const viewerData = {
-            name: nameInput.value,
+            name: nameInput.value.trim(),
             groupSize: parseInt(countInput.value),
-            timestamp: Date.now()
+            timestamp: firebase.database.ServerValue.TIMESTAMP
         };
 
-        // 1. Log the entry in Firebase
-        const entryRef = database.ref('stream_entries').push();
-        await entryRef.set(viewerData);
+        try {
+            // 1. Log entrance record
+            await database.ref('stream_entries').push(viewerData);
+            console.log("📡 Entrance logged to Firebase");
 
-        // 2. Add to active live count (handles the "People Watching" math)
-        // Note: Using groupSize to represent true audience reach
-        const presenceRef = database.ref('liveViewers').push(viewerData.groupSize);
-        presenceRef.onDisconnect().remove();
+            // 2. Presence
+            const presenceRef = database.ref('liveViewers').push(viewerData.groupSize);
+            presenceRef.onDisconnect().remove();
+            console.log("👥 Presence established");
 
-        // 3. UI Transition
-        localStorage.setItem('mbn_name', viewerData.name);
-        overlay.classList.add('fade-out');
-        
-        // Start stream sync AFTER interaction (helps bypass browser autoplay blocks)
-        syncWithCMS();
-        
-        setTimeout(() => overlay.remove(), 500);
+            // 3. UI Transition
+            localStorage.setItem('mbn_name', viewerData.name);
+            overlay.classList.add('fade-out');
+            console.log("🎬 Hiding modal, triggering stream...");
+            
+            // Trigger Stream
+            syncWithCMS();
+            
+            setTimeout(() => {
+                overlay.remove();
+                console.log("🧹 Modal removed from DOM");
+            }, 500);
+
+        } catch (err) {
+            console.error("❌ Firebase Error:", err);
+            // Even if Firebase fails, let them watch
+            overlay.classList.add('fade-out');
+            syncWithCMS();
+        }
     };
 });
 
 // --- CMS & PLAYER LOGIC ---
 async function syncWithCMS() {
+    console.log("📡 Fetching CMS settings...");
     const container = document.getElementById('media-container');
     const liveIndicator = document.querySelector('.live-indicator');
     const titleHeader = document.getElementById('stream-title');
 
     try {
-        const res = await fetch('/data/links.json?nocache=' + new Date().getTime());
+        const res = await fetch('/data/links.json?nocache=' + Date.now());
         const data = await res.json();
+        console.log("📄 CMS Data received:", data);
+
         if (data.title) titleHeader.innerText = data.title;
 
         const ytId = getYouTubeID(data.youtubeLink);
@@ -205,19 +239,60 @@ async function syncWithCMS() {
         const isLive = data.status === "live";
 
         if (!isLive) {
+            console.log("⏸️ Stream is offline, showing hero video");
             showOfflineMode(container, liveIndicator, data.heroVideo);
             return;
         }
 
+        liveIndicator.style.display = "inline-flex";
+
         if (ytId) {
-            liveIndicator.style.display = "inline-flex";
+            console.log("📺 Loading YouTube Player...");
             container.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${ytId}?autoplay=1&mute=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
-        } else if (streamUrl.includes(".m3u8")) {
-            // ... (rest of your existing M3U8/Hls logic)
-            setupHlsPlayer(container, streamUrl, liveIndicator);
+        } 
+        else if (streamUrl.includes(".m3u8")) {
+            console.log("📺 Loading HLS Player...");
+            container.innerHTML = `<video id="live-player" controls autoplay playsinline style="width:100%; height:100%;"></video>`;
+            const video = document.getElementById('live-player');
+            
+            if (typeof Hls !== 'undefined' && Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(streamUrl);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = streamUrl;
+            }
+        }
+        else {
+            console.warn("⚠️ No valid stream link found.");
+            showOfflineMode(container, liveIndicator, data.heroVideo);
         }
     } catch (err) {
-        console.error("Sync Error:", err);
+        console.error("❌ Sync Error:", err);
+    }
+}
+
+function showOfflineMode(container, indicator, videoUrl) {
+    if (indicator) indicator.style.display = "none";
+    container.innerHTML = `
+      <div style="position: relative; width: 100%; height: 100%;">
+          <video id="bg-video" autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover;">
+            <source src="${videoUrl}" type="video/mp4">
+          </video>
+          <button id="volume-toggle" style="position: absolute; bottom: 20px; right: 20px; z-index: 10; background: rgba(0,0,0,0.7); color: white; border: 1px solid white; padding: 10px 18px; border-radius: 25px; cursor: pointer;">
+              Unmute Sound
+          </button>
+      </div>
+    `;
+
+    const v = document.getElementById('bg-video');
+    const btn = document.getElementById('volume-toggle');
+    if (v && btn) {
+        btn.onclick = () => {
+            v.muted = !v.muted;
+            btn.innerText = v.muted ? 'Unmute Sound' : 'Mute Audio';
+        };
     }
 }
 
