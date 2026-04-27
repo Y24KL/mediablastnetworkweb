@@ -362,6 +362,39 @@ body.dark-theme .contact-form textarea {
   color: #a0aec0;
   line-height: 1.5;
 }
+
+        /* ==================== HAMBURGER SIMPLE ==================== */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: inherit;
+}
+
+/* Mobile behavior */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 70px;
+        right: 20px;
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+}
     </style>
 </head>
 <body class="light-theme">
@@ -372,19 +405,25 @@ body.dark-theme .contact-form textarea {
         </div>
     </div>
 
-    <nav class="navbar glass sticky">
-        <a href="#home" class="logo-link">
-            <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="nav-logo-img">
-        </a>
-        
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="live.html">Live TV</a></li>
-            <li><a href="programs.html">Programs</a></li>
-            <li><a href="news.html">News</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-    </nav>
+   <nav class="navbar glass sticky">
+    <a href="#home" class="logo-link">
+        <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="nav-logo-img">
+    </a>
+
+    <!-- Hamburger Icon -->
+    <button class="menu-toggle" id="menu-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Existing Menu -->
+    <ul class="nav-links" id="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="live.html">Live TV</a></li>
+        <li><a href="programs.html">Programs</a></li>
+        <li><a href="news.html">News</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
             <button id="theme-toggle" title="Toggle Mode"></button>
 
     <header id="home" class="hero">
@@ -569,21 +608,17 @@ body.dark-theme .contact-form textarea {
             }
         });
 
-        // 2. Day & Night Mode Toggle
-        const themeBtn = document.getElementById('theme-toggle');
-        const body = document.body;
+const menuToggle = document.getElementById('menu-toggle');
+const navLinks = document.getElementById('nav-links');
+const icon = menuToggle.querySelector('i');
 
-        themeBtn.addEventListener('click', () => {
-            if (body.classList.contains('light-theme')) {
-                body.classList.remove('light-theme');
-                body.classList.add('dark-theme');
-                themeBtn.innerHTML = '<i class="fas fa-sun"></i>';
-            } else {
-                body.classList.remove('dark-theme');
-                body.classList.add('light-theme');
-                themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
-            }
-        });
+menuToggle.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+
+    // Change icon ☰ ↔ ✖
+    icon.classList.toggle('fa-bars');
+    icon.classList.toggle('fa-times');
+});
     </script>
 </body>
 </html>
