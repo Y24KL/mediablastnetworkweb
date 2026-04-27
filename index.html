@@ -10,34 +10,75 @@
     <link rel="stylesheet" href="style.css">
     
     <style>
-       /* Ensure the toggle is visible and colored correctly */
-.mobile-menu-toggle {
-    display: none; /* Default hidden for desktop */
-    background: transparent;
-    border: none;
+       /* --- Navbar Base --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 5%;
+    position: relative;
+}
+
+/* --- The Toggle Button --- */
+.menu-toggle {
+    display: block; /* Always show the button */
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 1.5rem;
     cursor: pointer;
-    padding: 10px;
-    z-index: 1100; /* Must be higher than nav-wrapper */
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: 0.3s;
+    z-index: 1001;
 }
 
-/* Force show on mobile/tablets */
-@media (max-width: 992px) {
-    .mobile-menu-toggle {
-        display: block !important;
-    }
-    
-    /* Ensure the icon itself has a visible color */
-    .mobile-menu-toggle i {
-        color: #ff4d4d !important; /* Using your brand red to make it stand out */
-        font-size: 28px;
-    }
+/* --- The Collapsible Wrapper --- */
+.nav-wrapper {
+    position: fixed;
+    top: 0;
+    right: -100%; /* Completely hidden off-screen */
+    width: 300px;
+    height: 100vh;
+    background: rgba(20, 20, 20, 0.95); /* Darker background for contrast */
+    backdrop-filter: blur(20px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    z-index: 1000;
 }
 
-/* Adjust the logo position on mobile so it doesn't overlap */
-@media (max-width: 992px) {
-    .navbar {
-        justify-content: space-between;
-        padding: 10px 20px;
+/* When the "active" class is added via JS */
+.nav-wrapper.active {
+    right: 0; 
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: #ff4d4d;
+}
+
+/* Hide desktop links if they were still lingering in your style.css */
+@media (min-width: 1px) {
+    .nav-links {
+        display: flex; 
     }
 }
         /* ==================== 2. FIXED CLICKABLE SOCIAL BUBBLE ==================== */
@@ -434,17 +475,12 @@ body.dark-theme .contact-form textarea {
            <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="loader-logo">
         </div>
     </div>
-
-    <nav class="navbar glass sticky">
+<nav class="navbar glass sticky">
     <a href="#home" class="logo-link">
         <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="nav-logo-img">
     </a>
     
-   <button class="mobile-menu-toggle" id="menu-toggle" aria-label="Open Menu">
-    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M4 7H26M4 15H26M4 23H26" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-</button>
+    <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Navigation">
         <i class="fas fa-bars"></i>
     </button>
 
@@ -455,7 +491,6 @@ body.dark-theme .contact-form textarea {
             <li><a href="programs.html">Programs</a></li>
             <li><a href="news.html">News</a></li>
             <li><a href="#contact">Contact</a></li>
-            <li><button id="theme-toggle" class="nav-theme-btn"><i class="fas fa-moon"></i></button></li>
         </ul>
     </div>
 </nav>
@@ -680,27 +715,37 @@ body.dark-theme .contact-form textarea {
             menuToggle.querySelector('i').classList.remove('fa-times');
         });
     });
+        
+    const menuToggle = document.getElementById('menu-toggle');
+    const navWrapper = document.getElementById('nav-wrapper');
+    const icon = menuToggle.querySelector('i');
 
-    // 3. Updated Theme Toggle (Matches the new HTML structure)
-    const themeBtn = document.getElementById('theme-toggle');
-    const body = document.body;
-
-    themeBtn.addEventListener('click', () => {
-        if (body.classList.contains('light-theme')) {
-            body.classList.replace('light-theme', 'dark-theme');
-            themeBtn.innerHTML = '<i class="fas fa-sun"></i>';
-        } else {
-            body.classList.replace('dark-theme', 'light-theme');
-            themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
-        }
+    // Toggle Menu
+    menuToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navWrapper.classList.toggle('active');
+        
+        // Swap icons
+        icon.classList.toggle('fa-bars');
+        icon.classList.toggle('fa-times');
     });
 
-    // Social Float Logic (Existing)
-    const socialTrigger = document.querySelector('.social-trigger');
-    const socialFloat = document.querySelector('.social-float');
-    socialTrigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        socialFloat.classList.toggle('active');
+    // Close menu when clicking a link
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            navWrapper.classList.remove('active');
+            icon.classList.add('fa-bars');
+            icon.classList.remove('fa-times');
+        });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!navWrapper.contains(e.target) && !menuToggle.contains(e.target)) {
+            navWrapper.classList.remove('active');
+            icon.classList.add('fa-bars');
+            icon.classList.remove('fa-times');
+        }
     });
 </script>
 </body>
