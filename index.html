@@ -11,37 +11,44 @@
     
     <style>
        /* --- Navbar Base --- */
+/* --- Navbar Layout --- */
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 5%;
-    position: relative;
+    padding: 15px 5%;
 }
 
-/* --- The Toggle Button --- */
+/* --- The Menu Button (Always Visible) --- */
 .menu-toggle {
-    display: block; /* Always show the button */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
     font-size: 1.5rem;
     cursor: pointer;
-    padding: 8px 12px;
+    padding: 10px;
     border-radius: 8px;
+    z-index: 1100;
     transition: 0.3s;
-    z-index: 1001;
 }
 
-/* --- The Collapsible Wrapper --- */
+.menu-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* --- The Hidden Menu Drawer --- */
 .nav-wrapper {
     position: fixed;
     top: 0;
-    right: -100%; /* Completely hidden off-screen */
-    width: 300px;
+    right: -100%; /* Hidden off-screen */
+    width: 320px;
     height: 100vh;
-    background: rgba(20, 20, 20, 0.95); /* Darker background for contrast */
-    backdrop-filter: blur(20px);
+    background: rgba(15, 15, 15, 0.98);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -50,9 +57,9 @@
     z-index: 1000;
 }
 
-/* When the "active" class is added via JS */
+/* When active (toggled by JS) */
 .nav-wrapper.active {
-    right: 0; 
+    right: 0;
 }
 
 .nav-links {
@@ -60,26 +67,24 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 30px;
+    gap: 40px;
 }
 
 .nav-links a {
     text-decoration: none;
-    color: white;
-    font-size: 1.2rem;
+    color: white !important;
+    font-size: 1.4rem;
     font-weight: 600;
     transition: 0.3s;
 }
 
 .nav-links a:hover {
-    color: #ff4d4d;
+    color: #ff4d4d !important;
 }
 
-/* Hide desktop links if they were still lingering in your style.css */
-@media (min-width: 1px) {
-    .nav-links {
-        display: flex; 
-    }
+/* Remove old theme-toggle styles if any remain */
+#theme-toggle, .nav-theme-btn {
+    display: none !important;
 }
         /* ==================== 2. FIXED CLICKABLE SOCIAL BUBBLE ==================== */
         .social-float {
@@ -475,25 +480,27 @@ body.dark-theme .contact-form textarea {
            <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="loader-logo">
         </div>
     </div>
-<nav class="navbar glass sticky">
-    <a href="#home" class="logo-link">
-        <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="nav-logo-img">
-    </a>
-    
-    <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Navigation">
-        <i class="fas fa-bars"></i>
-    </button>
+<body class="dark-theme"> 
 
-    <div class="nav-wrapper" id="nav-wrapper">
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="live.html">Live TV</a></li>
-            <li><a href="programs.html">Programs</a></li>
-            <li><a href="news.html">News</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-    </div>
-</nav>
+    <nav class="navbar glass sticky">
+        <a href="#home" class="logo-link">
+            <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="nav-logo-img">
+        </a>
+        
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open Menu">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <div class="nav-wrapper" id="nav-wrapper">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="live.html">Live TV</a></li>
+                <li><a href="programs.html">Programs</a></li>
+                <li><a href="news.html">News</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
 
     <header id="home" class="hero">
         <video autoplay muted loop class="hero-video">
@@ -660,91 +667,48 @@ body.dark-theme .contact-form textarea {
 
     <script src="script.js"></script>
 
-    <script>
-        // 1. Social Float Click Toggle
-        const socialTrigger = document.querySelector('.social-trigger');
-        const socialFloat = document.querySelector('.social-float');
-        
-        socialTrigger.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevents instant closing
-            socialFloat.classList.toggle('active');
-        });
-
-        // Close it when clicking anywhere else on screen
-        document.addEventListener('click', (e) => {
-            if (!socialFloat.contains(e.target)) {
-                socialFloat.classList.remove('active');
-            }
-        });
-
-        // 2. Day & Night Mode Toggle
-        const themeBtn = document.getElementById('theme-toggle');
-        const body = document.body;
-
-        themeBtn.addEventListener('click', () => {
-            if (body.classList.contains('light-theme')) {
-                body.classList.remove('light-theme');
-                body.classList.add('dark-theme');
-                themeBtn.innerHTML = '<i class="fas fa-sun"></i>';
-            } else {
-                body.classList.remove('dark-theme');
-                body.classList.add('light-theme');
-                themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
-            }
-        });
-
-        <script>
+  <script>
+    // 1. Menu Toggle Logic
     const menuToggle = document.getElementById('menu-toggle');
     const navWrapper = document.getElementById('nav-wrapper');
-    const navLinks = document.querySelectorAll('.nav-links a');
+    const menuIcon = menuToggle.querySelector('i');
 
-    // 1. Toggle Mobile Menu
-    menuToggle.addEventListener('click', () => {
-        navWrapper.classList.toggle('active');
-        // Change icon between Bars and X
-        const icon = menuToggle.querySelector('i');
-        icon.classList.toggle('fa-bars');
-        icon.classList.toggle('fa-times');
-    });
-
-    // 2. Close Menu when a link is clicked
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            navWrapper.classList.remove('active');
-            menuToggle.querySelector('i').classList.add('fa-bars');
-            menuToggle.querySelector('i').classList.remove('fa-times');
-        });
-    });
-        
-    const menuToggle = document.getElementById('menu-toggle');
-    const navWrapper = document.getElementById('nav-wrapper');
-    const icon = menuToggle.querySelector('i');
-
-    // Toggle Menu
     menuToggle.addEventListener('click', (e) => {
         e.stopPropagation();
         navWrapper.classList.toggle('active');
         
-        // Swap icons
-        icon.classList.toggle('fa-bars');
-        icon.classList.toggle('fa-times');
+        // Swap icon between Hamburger and X
+        menuIcon.classList.toggle('fa-bars');
+        menuIcon.classList.toggle('fa-times');
     });
 
-    // Close menu when clicking a link
+    // 2. Close menu when clicking a link
     document.querySelectorAll('.nav-links a').forEach(link => {
         link.addEventListener('click', () => {
             navWrapper.classList.remove('active');
-            icon.classList.add('fa-bars');
-            icon.classList.remove('fa-times');
+            menuIcon.classList.add('fa-bars');
+            menuIcon.classList.remove('fa-times');
         });
     });
 
-    // Close menu when clicking outside
+    // 3. Social Float Logic (Existing)
+    const socialTrigger = document.querySelector('.social-trigger');
+    const socialFloat = document.querySelector('.social-float');
+    
+    socialTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        socialFloat.classList.toggle('active');
+    });
+
+    // Global click listener to close menus when clicking outside
     document.addEventListener('click', (e) => {
-        if (!navWrapper.contains(e.target) && !menuToggle.contains(e.target)) {
+        if (navWrapper.classList.contains('active') && !navWrapper.contains(e.target) && !menuToggle.contains(e.target)) {
             navWrapper.classList.remove('active');
-            icon.classList.add('fa-bars');
-            icon.classList.remove('fa-times');
+            menuIcon.classList.add('fa-bars');
+            menuIcon.classList.remove('fa-times');
+        }
+        if (!socialFloat.contains(e.target)) {
+            socialFloat.classList.remove('active');
         }
     });
 </script>
