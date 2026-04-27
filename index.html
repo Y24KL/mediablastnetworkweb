@@ -4,58 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mediablast Network | Reaching Every World</title>
+
     <link rel="icon" type="image/png" href="image/MEDIA BLAST.png?v=2">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    
+
     <style>
-        /* ==================== GLOBAL RESTORATION ==================== */
+        /* ==================== GLOBAL LIGHT MODE ==================== */
         body {
-            background-color: #141414 !important;
-            color: #e0e0e0 !important;
+            background-color: #ffffff;
+            color: #222;
             margin: 0;
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
         }
 
-        /* Force visibility for all text elements */
-        h1, h2, h3, h4, h5, h6, p, span, label, li, a {
-            color: #ffffff !important;
+        h1, h2, h3, h4, p, span:not(.live-indicator) {
+            color: #111;
         }
 
-        .gradient-text {
-            background: linear-gradient(45deg, #ff4d4d, #f9cb28);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: inline-block;
-        }
-
+        /* Glass effect (light) */
         .glass {
-            background: rgba(30, 30, 30, 0.85) !important;
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
         }
 
-        /* ==================== FIXED NAV BAR ==================== */
+        /* ==================== NAV ==================== */
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px 5%;
             z-index: 1000;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            box-sizing: border-box;
         }
 
         .menu-toggle {
             display: flex !important;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #111;
             font-size: 1.5rem;
             cursor: pointer;
             padding: 10px 15px;
@@ -69,12 +58,12 @@
             right: -100%;
             width: 300px;
             height: 100vh;
-            background: #000000;
+            background: #ffffff;
             display: flex;
             flex-direction: column;
             justify-content: center;
             transition: 0.4s ease-in-out;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.2);
             z-index: 1050;
         }
 
@@ -93,31 +82,35 @@
 
         .nav-links a {
             text-decoration: none;
+            color: #111;
             font-size: 1.3rem;
             font-weight: 600;
-            transition: 0.3s;
         }
 
         .nav-links a:hover {
-            color: #ff4d4d !important;
+            color: #ff4d4d;
         }
 
-        /* Hide the old theme toggle styles */
-        #theme-toggle { display: none !important; }
-
-        /* Ensure hero content is visible */
-        .hero {
-            position: relative;
-            padding-top: 100px;
-        }
+        #theme-toggle { display: none; }
     </style>
 </head>
-<body class="dark-theme">
+
+<body>
+
+    <!-- Loader -->
+    <div id="loader">
+        <div class="loader-content">
+            <div class="spinner"></div>
+            <img src="image/MEDIA BLAST.png" alt="Logo" class="loader-logo">
+        </div>
+    </div>
+
+    <!-- NAV -->
     <nav class="navbar glass sticky">
         <a href="#home" class="logo-link">
-            <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="nav-logo-img" style="height: 40px;">
+            <img src="image/MEDIA BLAST.png" alt="Logo" class="nav-logo-img">
         </a>
-        
+
         <button class="menu-toggle" id="menu-toggle">
             <i class="fas fa-bars"></i>
         </button>
@@ -133,14 +126,18 @@
         </div>
     </nav>
 
+    <!-- HERO -->
     <header id="home" class="hero">
         <video autoplay muted loop class="hero-video">
             <source src="videos/LOVEWORLD WORSHIP APP PROMO.mp4" type="video/mp4">
         </video>
+
         <div class="hero-overlay"></div>
-        <div class="hero-content reveal">
+
+        <div class="hero-content">
             <h1>Reaching <br><span class="gradient-text">Every World</span></h1>
-            <p>Experience the next generation of digital media. High-definition storytelling, unfiltered news, and immersive entertainment blasted directly to you.</p>
+            <p>Experience the next generation of digital media.</p>
+
             <div class="cta-group">
                 <a href="live.html" class="btn btn-primary">Watch Live Now</a>
                 <a href="programs.html" class="btn btn-outline">View Schedule</a>
@@ -148,44 +145,45 @@
         </div>
     </header>
 
-    <section id="live-teaser" class="teaser-section reveal">
+    <!-- TEASER -->
+    <section class="teaser-section">
         <div class="container">
             <div class="teaser-glass glass">
                 <div class="teaser-content">
                     <span class="live-indicator">UPCOMING</span>
                     <h2>TESTIMONIES OF PRAISE</h2>
-                    <p>You can’t afford to miss tonight’s special episode of Testimonies of Praise. Don’t miss it!</p>
+                    <p>Don’t miss tonight’s episode.</p>
                     <a href="live.html" class="btn btn-primary">Watch Live</a>
                 </div>
                 <div class="teaser-preview">
-                    <img src="image/image_1777225763.jpg" alt="Live Preview">
+                    <img src="image/image_1777225763.jpg" alt="Preview">
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="contact" class="contact-section reveal">
+    <!-- CONTACT -->
+    <section id="contact" class="contact-section">
         <div class="container">
             <div class="contact-grid glass">
+
                 <div class="contact-info">
                     <h2 class="gradient-text">Contact Us</h2>
-                    <p>Our newsroom is open 24/7.</p>
-                    <div class="info-details">
-                        <div class="info-item"><i class="fas fa-envelope"></i><span>@mediablastnetwork</span></div>
-                        <div class="info-item"><i class="fas fa-map-marker-alt"></i><span>Asese, Maba</span></div>
-                    </div>
+                    <p>Reach out anytime.</p>
                 </div>
-                <form action="https://formspree.io/f/meepelvp" method="POST" id="contactForm" class="contact-form">
-                    <div class="form-group"><label>Name</label><input type="text" name="name" required></div>
-                    <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
-                    <div class="form-group"><label>Message</label><textarea name="message" rows="4" required></textarea></div>
-                    <button type="submit" class="submit-btn">Send Message</button>
+
+                <form action="https://formspree.io/f/meepelvp" method="POST">
+                    <input type="text" name="name" placeholder="Name" required>
+                    <input type="email" name="email" placeholder="Email" required>
+                    <textarea name="message" placeholder="Message"></textarea>
+                    <button type="submit">Send</button>
                 </form>
+
             </div>
         </div>
     </section>
 
-    <script src="script.js"></script>
+    <!-- SCRIPT -->
     <script>
         const menuToggle = document.getElementById('menu-toggle');
         const navWrapper = document.getElementById('nav-wrapper');
@@ -194,16 +192,9 @@
         menuToggle.addEventListener('click', (e) => {
             e.stopPropagation();
             navWrapper.classList.toggle('active');
+
             menuIcon.classList.toggle('fa-bars');
             menuIcon.classList.toggle('fa-times');
-        });
-
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                navWrapper.classList.remove('active');
-                menuIcon.classList.add('fa-bars');
-                menuIcon.classList.remove('fa-times');
-            });
         });
 
         document.addEventListener('click', (e) => {
@@ -214,5 +205,6 @@
             }
         });
     </script>
+
 </body>
 </html>
