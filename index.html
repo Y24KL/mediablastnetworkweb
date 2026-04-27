@@ -10,484 +10,106 @@
     <link rel="stylesheet" href="style.css">
     
     <style>
-       /* --- Navbar Base --- */
-/* --- Navbar Layout --- */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 5%;
-}
-
-/* --- The Menu Button (Always Visible) --- */
-.menu-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 10px;
-    border-radius: 8px;
-    z-index: 1100;
-    transition: 0.3s;
-}
-
-.menu-toggle:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-/* --- The Hidden Menu Drawer --- */
-.nav-wrapper {
-    position: fixed;
-    top: 0;
-    right: -100%; /* Hidden off-screen */
-    width: 320px;
-    height: 100vh;
-    background: rgba(15, 15, 15, 0.98);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: -10px 0 30px rgba(0,0,0,0.5);
-    z-index: 1000;
-}
-
-/* When active (toggled by JS) */
-.nav-wrapper.active {
-    right: 0;
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 40px;
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: white !important;
-    font-size: 1.4rem;
-    font-weight: 600;
-    transition: 0.3s;
-}
-
-.nav-links a:hover {
-    color: #ff4d4d !important;
-}
-
-/* Remove old theme-toggle styles if any remain */
-#theme-toggle, .nav-theme-btn {
-    display: none !important;
-}
-        /* ==================== 2. FIXED CLICKABLE SOCIAL BUBBLE ==================== */
-        .social-float {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 10000; 
-            display: flex;
-            flex-direction: column-reverse;
-            align-items: center;
+<style>
+        /* ==================== GLOBAL RESTORATION ==================== */
+        body {
+            background-color: #141414 !important; /* Deep dark background */
+            color: #e0e0e0 !important; /* Light text for visibility */
+            margin: 0;
+            font-family: 'Inter', sans-serif;
         }
 
-        .social-trigger {
-            width: 55px;
-            height: 55px;
-            background: linear-gradient(45deg, #ff0000, #990000);
-            border-radius: 50%;
+        h1, h2, h3, h4, p, span:not(.live-indicator) {
+            color: #ffffff !important;
+        }
+
+        .glass {
+            background: rgba(30, 30, 30, 0.85) !important;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* ==================== FIXED NAV BAR ==================== */
+        .navbar {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            color: white !important;
+            padding: 15px 5%;
+            z-index: 1000;
+        }
+
+        /* The Menu Button - Always Visible */
+        .menu-toggle {
+            display: flex !important;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1.5rem;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease;
+            padding: 10px 15px;
+            border-radius: 8px;
+            z-index: 1100;
         }
 
-        .social-icons {
+        /* The Hidden Menu Drawer */
+        .nav-wrapper {
+            position: fixed;
+            top: 0;
+            right: -100%; /* Hidden off-screen */
+            width: 300px;
+            height: 100vh;
+            background: #000000;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-bottom: 15px;
-            opacity: 0;
-            pointer-events: none; /* Blocks clicks when hidden */
-            transition: all 0.3s ease-in-out;
-            transform: translateY(15px);
-        }
-
-        /* Opens on click (via Javascript) and on desktop hover as a fall-back */
-        .social-float:hover .social-icons,
-        .social-float.active .social-icons {
-            opacity: 1;
-            pointer-events: auto; /* Restores link clickability when visible */
-            transform: translateY(0);
-        }
-
-        /* Rotate the + icon into an X when active */
-        .social-float.active .social-trigger i {
-            transform: rotate(45deg);
-        }
-
-        .social-link {
-            width: 45px;
-            height: 45px;
-            background: #ffffff !important;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
             justify-content: center;
+            transition: 0.4s ease-in-out;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            z-index: 1050;
+        }
+
+        .nav-wrapper.active {
+            right: 0; /* Slide in */
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 35px;
+        }
+
+        .nav-links a {
             text-decoration: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            transition: 0.2s;
-        }
-        
-        .social-link i {
-            color: #333333 !important;
+            color: white !important;
+            font-size: 1.3rem;
+            font-weight: 600;
         }
 
-        .social-link:hover {
-            transform: scale(1.1);
-            background: #f8f8f8 !important;
+        .nav-links a:hover {
+            color: #ff4d4d !important;
         }
 
-        .custom-soc-icon {
-            width: 25px;
-            height: 25px;
-            object-fit: contain;
-        }
-
-        @media (max-width: 768px) {
-            .social-float { bottom: 20px; right: 20px; }
-        }
-
-        .contact-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.5fr;
-            gap: 40px;
-            padding: 40px;
-            border-radius: 24px;
-            margin-top: 30px;
-        }
-
-/* ==================== CONTACT SECTION STYLING ==================== */
-.contact-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.5fr;
-    gap: 40px;
-    padding: 40px;
-    border-radius: 24px;
-    margin-top: 30px;
-    align-items: start;
-}
-
-.contact-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.contact-form label {
-    font-weight: 600;
-    font-size: 14px;
-    opacity: 0.8;
-}
-
-.contact-form input, 
-.contact-form textarea {
-    width: 100%;
-    padding: 16px;
-    border-radius: 12px;
-    border: 1px solid rgba(0,0,0,0.1);
-    background: rgba(255,255,255,0.8);
-    font-size: 16px; /* Prevents iOS zoom-on-focus */
-    transition: 0.3s;
-}
-
-/* Dark Theme Input Adjustments */
-body.dark-theme .contact-form input,
-body.dark-theme .contact-form textarea {
-    background: rgba(255,255,255,0.05);
-    border-color: rgba(255,255,255,0.1);
-    color: white;
-}
-
-.submit-btn {
-    background: #0a0a2c;
-    color: white !important;
-    padding: 18px;
-    border-radius: 50px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 10px 20px rgba(10,10,44,0.3);
-    transition: 0.3s;
-}
-
-.submit-btn:hover {
-    transform: translateY(-3px);
-    background: #1a1a4d;
-}
-
-/* ==================== MOBILE RESPONSIVENESS ==================== */
-@media (max-width: 768px) {
-    .contact-grid {
-        grid-template-columns: 1fr; /* Stack columns */
-        padding: 25px 20px;
-        gap: 30px;
-    }
-
-    .contact-info {
-        text-align: center;
-    }
-
-    .contact-info h2 {
-        font-size: 2.5rem;
-    }
-
-    .info-details {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .contact-socials {
-        justify-content: center;
-    }
-
-    .contact-form {
-        padding: 0;
-        background: transparent;
-        box-shadow: none;
-    }
-    
-    .contact-form input, 
-    .contact-form textarea {
-        padding: 14px; /* Slightly smaller for mobile screens */
-    }
-}
-
-    /* Container & Header Setup */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 20px;
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-.section-title {
-  font-size: 2rem;
-  color: #ffffff;
-}
-
-/* Gradient Text Effect */
-.gradient-text {
-  background: linear-gradient(45deg, #ff416c, #ff4b2b);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.view-all {
-  color: #ff4b2b;
-  text-decoration: none;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: transform 0.2s ease;
-}
-
-.view-all:hover {
-  transform: translateX(5px);
-}
-
-/* Carousel / Card Grid Layout */
-.program-carousel {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 25px;
-}
-
-.program-card-link {
-  text-decoration: none;
-  color: inherit;
-}
-
-/* Glassmorphism Card Style */
-.program-card.glass {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  overflow: hidden;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-/* Hover Effect */
-.program-card:hover {
-  transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-}
-
-/* Card Image Setup */
-.card-img {
-  width: 100%;
-  height: 180px;
-  background-size: cover;
-  background-position: center;
-  position: relative;
-}
-
-/* LIVE Tag Styling */
-.live-tag {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  background: #ff0055;
-  color: #fff;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: bold;
-  letter-spacing: 1px;
-  box-shadow: 0 2px 10px rgba(255, 0, 85, 0.4);
-}
-
-/* Card Content Area */
-.card-body {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-.card-body h3 {
-  font-size: 1.1rem;
-  margin-bottom: 10px;
-  color: #ffffff;
-}
-
-.card-body p {
-  font-size: 0.9rem;
-  color: #a0aec0;
-  line-height: 1.5;
-}
-
-/* ==================== COLLAPSIBLE NAVBAR STYLES ==================== */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 5%;
-}
-
-.mobile-menu-toggle {
-    display: none; /* Hidden on desktop */
-    background: none;
-    border: none;
-    color: inherit;
-    font-size: 1.5rem;
-    cursor: pointer;
-    z-index: 1001;
-}
-
-.nav-theme-btn {
-    background: none;
-    border: none;
-    color: inherit;
-    font-size: 1.1rem;
-    cursor: pointer;
-    padding: 10px;
-}
-
-/* Responsive Logic */
-@media (max-width: 992px) {
-    .mobile-menu-toggle {
-        display: block;
-    }
-
-    .nav-wrapper {
-        position: fixed;
-        top: 0;
-        right: -100%; /* Hidden off-screen */
-        width: 70%;
-        height: 100vh;
-        background: inherit; /* Keeps the glass effect */
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: -10px 0 30px rgba(0,0,0,0.2);
-    }
-
-    .nav-wrapper.active {
-        right: 0; /* Slide in */
-    }
-
-    .nav-links {
-        flex-direction: column;
-        align-items: center;
-        gap: 30px;
-        display: flex;
-    }
-    
-    .nav-links li {
-        width: 100%;
-        text-align: center;
-    }
-
-    .nav-links a {
-        font-size: 1.2rem;
-        font-weight: 600;
-        display: block;
-    }
-}  
+        /* Hide the old theme toggle styles */
+        #theme-toggle { display: none !important; }
     </style>
 </head>
-<body class="light-theme">
+<body class="dark-theme">
     <div id="loader">
         <div class="loader-content">
             <div class="spinner"></div>
            <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="loader-logo">
         </div>
     </div>
-<body class="dark-theme"> 
 
     <nav class="navbar glass sticky">
         <a href="#home" class="logo-link">
             <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="nav-logo-img">
         </a>
         
-        <button class="menu-toggle" id="menu-toggle" aria-label="Open Menu">
+        <button class="menu-toggle" id="menu-toggle">
             <i class="fas fa-bars"></i>
         </button>
 
