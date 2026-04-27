@@ -97,13 +97,12 @@
 
 <body>
 
-    <!-- Loader -->
-    <div id="loader">
-        <div class="loader-content">
-            <div class="spinner"></div>
-            <img src="image/MEDIA BLAST.png" alt="Logo" class="loader-logo">
-        </div>
+<div id="loader">
+    <div class="loader-content">
+        <div class="spinner"></div>
+        <img src="image/MEDIA BLAST.png" alt="Logo" class="loader-logo">
     </div>
+</div>
 
     <!-- NAV -->
     <nav class="navbar glass sticky">
@@ -204,6 +203,22 @@
                 menuIcon.classList.remove('fa-times');
             }
         });
+
+
+window.addEventListener("load", () => {
+    const loader = document.getElementById("loader");
+
+    if (loader) {
+        setTimeout(() => {
+            loader.style.opacity = "0";
+            loader.style.visibility = "hidden";
+
+            setTimeout(() => {
+                loader.remove();
+            }, 500);
+        }, 500);
+    }
+});
     </script>
 
 </body>
