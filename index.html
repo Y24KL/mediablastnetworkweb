@@ -10,45 +10,36 @@
     <link rel="stylesheet" href="style.css">
     
     <style>
-        /* ==================== 1. ADAPTIVE DAY & NIGHT MODE ==================== */
-        body.light-theme {
-            background-color: #ffffff !important;
-        }
-        body.light-theme h1, 
-        body.light-theme h2, 
-        body.light-theme h3, 
-        body.light-theme p, 
-        body.light-theme span:not(.live-indicator), 
-        body.light-theme a:not(.btn):not(.social-link) {
-            color: #000000 !important;
-        }
-        body.light-theme .glass {
-            background: rgba(255, 255, 255, 0.9) !important;
-        }
+       /* Ensure the toggle is visible and colored correctly */
+.mobile-menu-toggle {
+    display: none; /* Default hidden for desktop */
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1100; /* Must be higher than nav-wrapper */
+}
 
-        body.dark-theme {
-            background-color: #141414 !important;
-        }
-        body.dark-theme h1, 
-        body.dark-theme h2, 
-        body.dark-theme h3, 
-        body.dark-theme p, 
-        body.dark-theme span:not(.live-indicator), 
-        body.dark-theme a:not(.btn):not(.social-link) {
-            color: #e0e0e0 !important;
-        }
-        body.dark-theme .glass {
-            background: rgba(30, 30, 30, 0.85) !important;
-        }
+/* Force show on mobile/tablets */
+@media (max-width: 992px) {
+    .mobile-menu-toggle {
+        display: block !important;
+    }
+    
+    /* Ensure the icon itself has a visible color */
+    .mobile-menu-toggle i {
+        color: #ff4d4d !important; /* Using your brand red to make it stand out */
+        font-size: 28px;
+    }
+}
 
-        /* Hero Text Always White */
-        #home.hero .hero-content h1,
-        #home.hero .hero-content h1 span,
-        #home.hero .hero-content p {
-            color: #ffffff !important;
-            text-shadow: 0 2px 12px rgba(0,0,0,0.6);
-        }
-
+/* Adjust the logo position on mobile so it doesn't overlap */
+@media (max-width: 992px) {
+    .navbar {
+        justify-content: space-between;
+        padding: 10px 20px;
+    }
+}
         /* ==================== 2. FIXED CLICKABLE SOCIAL BUBBLE ==================== */
         .social-float {
             position: fixed;
