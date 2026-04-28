@@ -702,53 +702,55 @@ body.dark-theme .contact-form textarea {
 
     <script src="script.js"></script>
 
-    <script>
-        // 1. Social Float Click Toggle
-        const socialTrigger = document.querySelector('.social-trigger');
-        const socialFloat = document.querySelector('.social-float');
-        
+<script src="script.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* ================= SOCIAL FLOAT ================= */
+    const socialTrigger = document.querySelector('.social-trigger');
+    const socialFloat = document.querySelector('.social-float');
+
+    if (socialTrigger && socialFloat) {
         socialTrigger.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevents instant closing
+            e.stopPropagation();
             socialFloat.classList.toggle('active');
         });
 
-        // Close it when clicking anywhere else on screen
         document.addEventListener('click', (e) => {
             if (!socialFloat.contains(e.target)) {
                 socialFloat.classList.remove('active');
             }
         });
+    }
 
-const menuToggle = document.getElementById('menu-toggle');
-const navLinks = document.getElementById('nav-links');
-const icon = menuToggle.querySelector('i');
+    /* ================= SIDE MENU ================= */
+    const menuToggle = document.getElementById('menu-toggle');
+    const sideMenu = document.getElementById('side-menu');
+    const closeMenu = document.getElementById('close-menu');
+    const overlay = document.getElementById('menu-overlay');
 
-menuToggle.addEventListener('click', () => {
-    navLinks.classList.toggle('active');
+    if (menuToggle && sideMenu) {
+        menuToggle.addEventListener('click', () => {
+            sideMenu.classList.add('active');
+            if (overlay) overlay.classList.add('active');
+        });
+    }
 
-    // Change icon ☰ ↔ ✖
-    icon.classList.toggle('fa-bars');
-    icon.classList.toggle('fa-times');
-});
+    if (closeMenu) {
+        closeMenu.addEventListener('click', () => {
+            sideMenu.classList.remove('active');
+            if (overlay) overlay.classList.remove('active');
+        });
+    }
 
-const menuToggle = document.getElementById('menu-toggle');
-const sideMenu = document.getElementById('side-menu');
-const closeMenu = document.getElementById('close-menu');
-const overlay = document.getElementById('menu-overlay');
+    if (overlay) {
+        overlay.addEventListener('click', () => {
+            sideMenu.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+    }
 
-menuToggle.addEventListener('click', () => {
-    sideMenu.classList.add('active');
-    overlay.classList.add('active');
-});
-
-closeMenu.addEventListener('click', () => {
-    sideMenu.classList.remove('active');
-    overlay.classList.remove('active');
-});
-
-overlay.addEventListener('click', () => {
-    sideMenu.classList.remove('active');
-    overlay.classList.remove('active');
 });
 </script>
 </body>
