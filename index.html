@@ -363,27 +363,87 @@ body.dark-theme .contact-form textarea {
   line-height: 1.5;
 }
 
-/* FORCE hamburger to show */
-.menu-toggle {
-    display: block !important; /* force visibility */
-    font-size: 28px;
-    color: #000 !important; /* make sure it's visible in light mode */
-    background: none;
-    border: none;
-    cursor: pointer;
-    z-index: 2000;
+/* ==================== SIDE MENU ==================== */
+.side-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 300px;
+    height: 100vh;
+    background: #ffffff;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.2);
+    transition: 0.4s ease;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
 }
 
-/* Position it properly */
-.navbar {
+.side-menu.active {
+    right: 0;
+}
+
+/* Header */
+.menu-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 30px;
 }
 
-/* Push icon to right */
-.menu-toggle {
-    margin-left: auto;
+.menu-logo {
+    width: 120px;
+}
+
+/* Close button */
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+/* Links */
+.menu-links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.menu-links a {
+    text-decoration: none;
+    font-size: 1.1rem;
+    color: #111;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+/* Overlay */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+    z-index: 9998;
+}
+
+.menu-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Hide old nav links */
+.nav-links {
+    display: none !important;
 }
     </style>
 </head>
@@ -395,23 +455,37 @@ body.dark-theme .contact-form textarea {
         </div>
     </div>
 
-   <nav class="navbar glass sticky">
+  <nav class="navbar glass sticky">
     <a href="#home" class="logo-link">
         <img src="image/MEDIA BLAST.png" class="nav-logo-img">
     </a>
 
+    <!-- Hamburger -->
     <button class="menu-toggle" id="menu-toggle">
         <i class="fas fa-bars"></i>
     </button>
-
-    <ul class="nav-links" id="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="live.html">Live TV</a></li>
-        <li><a href="programs.html">Programs</a></li>
-        <li><a href="news.html">News</a></li>
-        <li><a href="#contact">Contact</a></li>
-    </ul>
 </nav>
+
+<!-- SIDE MENU -->
+<div class="side-menu" id="side-menu">
+    <div class="menu-header">
+        <img src="image/MEDIA BLAST.png" class="menu-logo">
+        <button class="close-btn" id="close-menu">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <ul class="menu-links">
+        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="live.html"><i class="fas fa-tv"></i> Live TV</a></li>
+        <li><a href="programs.html"><i class="fas fa-film"></i> Programs</a></li>
+        <li><a href="news.html"><i class="fas fa-newspaper"></i> News</a></li>
+        <li><a href="#contact"><i class="fas fa-envelope"></i> Contact</a></li>
+    </ul>
+</div>
+
+<!-- Overlay -->
+<div class="menu-overlay" id="menu-overlay"></div>
             <button id="theme-toggle" title="Toggle Mode"></button>
 
     <header id="home" class="hero">
@@ -607,6 +681,27 @@ menuToggle.addEventListener('click', () => {
     icon.classList.toggle('fa-bars');
     icon.classList.toggle('fa-times');
 });
+
+const menuToggle = document.getElementById('menu-toggle');
+const sideMenu = document.getElementById('side-menu');
+const closeMenu = document.getElementById('close-menu');
+const overlay = document.getElementById('menu-overlay');
+
+menuToggle.addEventListener('click', () => {
+    sideMenu.classList.add('active');
+    overlay.classList.add('active');
+});
+
+closeMenu.addEventListener('click', () => {
+    sideMenu.classList.remove('active');
+    overlay.classList.remove('active');
+});
+
+overlay.addEventListener('click', () => {
+    sideMenu.classList.remove('active');
+    overlay.classList.remove('active');
+});
+</script>
     </script>
 </body>
 </html>
