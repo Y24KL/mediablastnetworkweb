@@ -227,82 +227,81 @@
             justify-content: center;
             align-items: center;
         }
-        /* ==================== CONTACT SECTION STYLING ==================== */
-
+/* ==================== RESPONSIVE CONTACT SECTION ==================== */
 .contact-grid {
-
     display: grid;
-
-    grid-template-columns: 1fr 1.5fr;
-
+    grid-template-columns: 1fr 1.5fr; /* Desktop: Side by side */
     gap: 40px;
-
     padding: 40px;
-
     border-radius: 24px;
-
     margin-top: 30px;
-
-    align-items: start;
-
 }
-
-
 
 .contact-form {
-
     display: flex;
-
     flex-direction: column;
-
     gap: 20px;
-
 }
 
-
-
-.form-group {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 8px;
-
-}
-
-
-
-.contact-form label {
-
-    font-weight: 600;
-
-    font-size: 14px;
-
-    opacity: 0.8;
-
-}
-
-
-
+/* Premium Input & Message Box Styling */
 .contact-form input, 
+.contact-form textarea {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px; /* Prevents auto-zoom on iOS */
+    transition: 0.3s border-color, 0.3s box-shadow;
+    box-sizing: border-box; /* Crucial for responsiveness */
+}
 
 .contact-form textarea {
+    resize: vertical; /* Allows user to grow box but not break width */
+    min-height: 120px;
+}
 
-    width: 100%;
+.contact-form input:focus, 
+.contact-form textarea:focus {
+    outline: none;
+    border-color: #ff416c;
+    box-shadow: 0 0 15px rgba(255, 65, 108, 0.2);
+}
 
-    padding: 16px;
+/* MOBILE ADJUSTMENTS (Phones & Tablets) */
+@media (max-width: 768px) {
+    .contact-grid {
+        grid-template-columns: 1fr; /* Stack: Info on top, Form on bottom */
+        padding: 30px 20px;
+        gap: 30px;
+    }
 
-    border-radius: 12px;
+    .contact-info {
+        text-align: center;
+    }
 
-    border: 1px solid rgba(0,0,0,0.1);
+    .contact-info h2 {
+        font-size: 2.2rem !important; /* Slightly smaller for mobile screens */
+    }
 
-    background: rgba(255,255,255,0.8);
+    .info-details {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
 
-    font-size: 16px; /* Prevents iOS zoom-on-focus */
+    .contact-form label {
+        font-size: 13px;
+        margin-bottom: 4px;
+    }
 
-    transition: 0.3s;
-
+    .submit-btn {
+        width: 100%; /* Full width button on mobile */
+        padding: 16px;
+    }
 }
     </style>
 </head>
