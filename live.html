@@ -140,38 +140,41 @@
         </div>
     </nav>
 
-    <main class="live-compact-container">
-        <section class="video-section-compact">
-            <div id="media-container" style="width: 100%; max-width: 900px; aspect-ratio: 16/9; background: #000; border-radius: 20px; overflow: hidden; margin: 20px auto; position: relative;">
-                <div style="color:white; text-align:center; padding-top:20%;">Welcome! Please join to start the stream.</div>
+   <main class="live-compact-container">
+    <section class="video-section-compact">
+        <div id="media-container" style="width: 100%; max-width: 900px; aspect-ratio: 16/9; background: #000; border-radius: 20px; overflow: hidden; margin: 20px auto; position: relative;">
+            <div id="placeholder-text" style="color:white; text-align:center; padding-top:20%;">Welcome! Please join to start the stream.</div>
             </div>
-            <div class="video-details-compact" style="text-align: center;">
-                <h1 id="stream-title" style="color: white; font-size: 1.5rem; margin-top: 15px;">Live Stream</h1>
-            </div>
-        </section>
-    </main>
-</div>
+        <div class="video-details-compact" style="text-align: center;">
+            <h1 id="stream-title" style="color: white; font-size: 1.5rem; margin-top: 15px;">Live Stream</h1>
+        </div>
+    </section>
+</main>
 
 <div id="pre-stream-overlay" class="stream-overlay">
-    <div class="stream-modal">
+    <div class="stream-modal glass">
         <div class="modal-header">
-            <h2>Welcome to Mediablast Network Livestream</h2>
+            <div class="live-badge"><span class="pulse"></span> LIVE</div>
+            <h2>Mediablast Network</h2>
             <p>Tell us who’s watching with you 🍿</p>
         </div>
         <form id="viewer-form">
             <div class="input-group">
-                <label>Your Name</label>
-                <input type="text" id="viewer-name" placeholder="Enter your name" required>
+                <label>Your Name <span class="optional-tag">(Optional)</span></label>
+                <input type="text" id="viewer-name" placeholder="Enter your name">
             </div>
             <div class="input-group">
-                <label>Number of people watching</label>
+                <label>Number of people watching <span class="optional-tag">(Optional)</span></label>
                 <div class="stepper">
                     <button type="button" id="step-down" class="step-btn">−</button>
-                    <input type="number" id="viewer-count" value="1" min="1" required>
+                    <input type="number" id="viewer-count" value="1" min="1">
                     <button type="button" id="step-up" class="step-btn">+</button>
                 </div>
             </div>
             <button type="submit" id="join-stream-btn" class="cta-btn">Join Live Stream</button>
+            <div style="text-align: center; margin-top: 15px;">
+                <a href="#" id="skip-link" style="color: rgba(255,255,255,0.5); font-size: 0.9rem; text-decoration: none;">Skip and watch anonymously</a>
+            </div>
         </form>
     </div>
 </div>
@@ -196,25 +199,39 @@ const database = firebase.database();
 document.addEventListener('DOMContentLoaded', () => {
     const overlay = document.getElementById('pre-stream-overlay');
     const form = document.getElementById('viewer-form');
+    const skipLink = document.getElementById('skip-link'); // Added skip link reference
     const nameInput = document.getElementById('viewer-name');
     const countInput = document.getElementById('viewer-count');
     const stepUp = document.getElementById('step-up');
     const stepDown = document.getElementById('step-down');
 
-    // Restore name
+    // Restore name if previously entered
     if(localStorage.getItem('mbn_name')) nameInput.value = localStorage.getItem('mbn_name');
 
     // Stepper logic
     stepUp.onclick = () => countInput.value = parseInt(countInput.value) + 1;
     stepDown.onclick = () => { if(parseInt(countInput.value) > 1) countInput.value = parseInt(countInput.value) - 1; };
 
-    // Form Logic
+    // Common function to enter the stream
+    const enterStream = () => {
+        overlay.classList.add('fade-out');
+        syncWithCMS();
+        setTimeout(() => overlay.remove(), 500);
+    };
+
+    // Skip Logic (Anonymous Entry)
+    skipLink.onclick = (e) => {
+        e.preventDefault();
+        enterStream();
+    };
+
+    // Form Logic (Data-Entry)
     form.onsubmit = async (e) => {
         e.preventDefault();
         
         const viewerData = {
-            name: nameInput.value.trim(),
-            groupSize: parseInt(countInput.value),
+            name: nameInput.value.trim() || "Anonymous",
+            groupSize: parseInt(countInput.value) || 1,
             timestamp: Date.now()
         };
 
@@ -224,18 +241,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const presenceRef = database.ref('liveViewers').push(viewerData.groupSize);
             presenceRef.onDisconnect().remove();
 
-            // Transition
-            localStorage.setItem('mbn_name', viewerData.name);
-            overlay.classList.add('fade-out');
+            if(viewerData.name !== "Anonymous") {
+                localStorage.setItem('mbn_name', viewerData.name);
+            }
             
-            // START THE STREAM
-            syncWithCMS();
-            
-            setTimeout(() => overlay.remove(), 500);
+            enterStream();
         } catch (err) {
             console.error("Firebase Error:", err);
-            overlay.classList.add('fade-out');
-            syncWithCMS();
+            enterStream(); // Enter stream anyway if Firebase fails
         }
     };
 });
