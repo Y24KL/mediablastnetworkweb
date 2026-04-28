@@ -10,771 +10,388 @@
     <link rel="stylesheet" href="style.css">
     
     <style>
-        /* ==================== 1. ADAPTIVE DAY & NIGHT MODE ==================== */
-        body.light-theme {
-            background-color: #ffffff !important;
-        }
-        body.light-theme h1, 
-        body.light-theme h2, 
-        body.light-theme h3, 
-        body.light-theme p, 
-        body.light-theme span:not(.live-indicator), 
-        body.light-theme a:not(.btn):not(.social-link) {
-            color: #000000 !important;
-        }
-        body.light-theme .glass {
-            background: rgba(255, 255, 255, 0.9) !important;
+        /* ==================== PREMIUM GLOBAL STYLES ==================== */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #ff416c, #ff4b2b);
+            --dark-bg: #0a0a0a;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
-        body.dark-theme {
-            background-color: #141414 !important;
-        }
-        body.dark-theme h1, 
-        body.dark-theme h2, 
-        body.dark-theme h3, 
-        body.dark-theme p, 
-        body.dark-theme span:not(.live-indicator), 
-        body.dark-theme a:not(.btn):not(.social-link) {
+        body {
+            background-color: var(--dark-bg) !important;
             color: #e0e0e0 !important;
-        }
-        body.dark-theme .glass {
-            background: rgba(30, 30, 30, 0.85) !important;
-        }
-
-        /* Hero Text Always White */
-        #home.hero .hero-content h1,
-        #home.hero .hero-content h1 span,
-        #home.hero .hero-content p {
-            color: #ffffff !important;
-            text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        /* ==================== 2. FIXED CLICKABLE SOCIAL BUBBLE ==================== */
+        h1, h2, h3 { color: #ffffff !important; font-weight: 800; }
+        
+        .gradient-text {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .glass {
+            background: rgba(20, 20, 20, 0.7) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+        }
+
+        /* ==================== LUXURY NAVBAR ==================== */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 6%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 9000;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        .nav-logo-img { height: 45px; transition: 0.3s; }
+
+        .menu-toggle {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--glass-border);
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 12px 18px;
+            border-radius: 12px;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .menu-toggle:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.05);
+        }
+
+        /* ==================== ULTRA-PREMIUM SIDE MENU ==================== */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 350px;
+            height: 100vh;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(30px);
+            box-shadow: -20px 0 60px rgba(0,0,0,0.5);
+            transition: right 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            padding: 40px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .side-menu.active { right: 0; }
+
+        .menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+
+        .close-btn {
+            font-size: 24px;
+            color: white;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .menu-links {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .menu-links li {
+            opacity: 0;
+            transform: translateX(40px);
+            transition: 0.5s ease;
+        }
+
+        .side-menu.active .menu-links li { opacity: 1; transform: translateX(0); }
+
+        .menu-links a {
+            text-decoration: none;
+            font-size: 22px;
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: 0.3s;
+        }
+
+        .menu-links a:hover { color: #ff4b2b; transform: translateX(10px); }
+
+        .menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.4s;
+            z-index: 9999;
+        }
+
+        .menu-overlay.active { opacity: 1; pointer-events: auto; }
+
+        /* ==================== HERO SECTION ==================== */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(3rem, 8vw, 5rem);
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            box-shadow: 0 10px 25px rgba(255, 75, 43, 0.4);
+        }
+
+        /* ==================== PROGRAM CARDS ==================== */
+        .program-card.glass {
+            border-radius: 24px;
+            overflow: hidden;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .program-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: rgba(255,255,255,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+
+        .card-img { height: 220px; }
+
+        /* ==================== SOCIAL BUBBLE ==================== */
         .social-float {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 10000; 
-            display: flex;
-            flex-direction: column-reverse;
-            align-items: center;
+            bottom: 40px;
+            right: 40px;
+            z-index: 8000;
         }
 
         .social-trigger {
-            width: 55px;
-            height: 55px;
-            background: linear-gradient(45deg, #ff0000, #990000);
+            width: 65px;
+            height: 65px;
+            background: var(--primary-gradient);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white !important;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4);
         }
 
-        .social-icons {
+        /* Loader */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 20000;
             display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 15px;
-            opacity: 0;
-            pointer-events: none; /* Blocks clicks when hidden */
-            transition: all 0.3s ease-in-out;
-            transform: translateY(15px);
-        }
-
-        /* Opens on click (via Javascript) and on desktop hover as a fall-back */
-        .social-float:hover .social-icons,
-        .social-float.active .social-icons {
-            opacity: 1;
-            pointer-events: auto; /* Restores link clickability when visible */
-            transform: translateY(0);
-        }
-
-        /* Rotate the + icon into an X when active */
-        .social-float.active .social-trigger i {
-            transform: rotate(45deg);
-        }
-
-        .social-link {
-            width: 45px;
-            height: 45px;
-            background: #ffffff !important;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            text-decoration: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            transition: 0.2s;
+            align-items: center;
         }
-        
-        .social-link i {
-            color: #333333 !important;
-        }
-
-        .social-link:hover {
-            transform: scale(1.1);
-            background: #f8f8f8 !important;
-        }
-
-        .custom-soc-icon {
-            width: 25px;
-            height: 25px;
-            object-fit: contain;
-        }
-
-        @media (max-width: 768px) {
-            .social-float { bottom: 20px; right: 20px; }
-        }
-
-        .contact-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.5fr;
-            gap: 40px;
-            padding: 40px;
-            border-radius: 24px;
-            margin-top: 30px;
-        }
-
-/* ==================== CONTACT SECTION STYLING ==================== */
-.contact-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.5fr;
-    gap: 40px;
-    padding: 40px;
-    border-radius: 24px;
-    margin-top: 30px;
-    align-items: start;
-}
-
-.contact-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.contact-form label {
-    font-weight: 600;
-    font-size: 14px;
-    opacity: 0.8;
-}
-
-.contact-form input, 
-.contact-form textarea {
-    width: 100%;
-    padding: 16px;
-    border-radius: 12px;
-    border: 1px solid rgba(0,0,0,0.1);
-    background: rgba(255,255,255,0.8);
-    font-size: 16px; /* Prevents iOS zoom-on-focus */
-    transition: 0.3s;
-}
-
-/* Dark Theme Input Adjustments */
-body.dark-theme .contact-form input,
-body.dark-theme .contact-form textarea {
-    background: rgba(255,255,255,0.05);
-    border-color: rgba(255,255,255,0.1);
-    color: white;
-}
-
-.submit-btn {
-    background: #0a0a2c;
-    color: white !important;
-    padding: 18px;
-    border-radius: 50px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 10px 20px rgba(10,10,44,0.3);
-    transition: 0.3s;
-}
-
-.submit-btn:hover {
-    transform: translateY(-3px);
-    background: #1a1a4d;
-}
-
-/* ==================== MOBILE RESPONSIVENESS ==================== */
-@media (max-width: 768px) {
-    .contact-grid {
-        grid-template-columns: 1fr; /* Stack columns */
-        padding: 25px 20px;
-        gap: 30px;
-    }
-
-    .contact-info {
-        text-align: center;
-    }
-
-    .contact-info h2 {
-        font-size: 2.5rem;
-    }
-
-    .info-details {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .contact-socials {
-        justify-content: center;
-    }
-
-    .contact-form {
-        padding: 0;
-        background: transparent;
-        box-shadow: none;
-    }
-    
-    .contact-form input, 
-    .contact-form textarea {
-        padding: 14px; /* Slightly smaller for mobile screens */
-    }
-}
-
-    /* Container & Header Setup */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 20px;
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-.section-title {
-  font-size: 2rem;
-  color: #ffffff;
-}
-
-/* Gradient Text Effect */
-.gradient-text {
-  background: linear-gradient(45deg, #ff416c, #ff4b2b);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.view-all {
-  color: #ff4b2b;
-  text-decoration: none;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: transform 0.2s ease;
-}
-
-.view-all:hover {
-  transform: translateX(5px);
-}
-
-/* Carousel / Card Grid Layout */
-.program-carousel {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 25px;
-}
-
-.program-card-link {
-  text-decoration: none;
-  color: inherit;
-}
-
-/* Glassmorphism Card Style */
-.program-card.glass {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  overflow: hidden;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-/* Hover Effect */
-.program-card:hover {
-  transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-}
-
-/* Card Image Setup */
-.card-img {
-  width: 100%;
-  height: 180px;
-  background-size: cover;
-  background-position: center;
-  position: relative;
-}
-
-/* LIVE Tag Styling */
-.live-tag {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  background: #ff0055;
-  color: #fff;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: bold;
-  letter-spacing: 1px;
-  box-shadow: 0 2px 10px rgba(255, 0, 85, 0.4);
-}
-
-/* Card Content Area */
-.card-body {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-.card-body h3 {
-  font-size: 1.1rem;
-  margin-bottom: 10px;
-  color: #ffffff;
-}
-
-.card-body p {
-  font-size: 0.9rem;
-  color: #a0aec0;
-  line-height: 1.5;
-}
-
-/* ===== ULTRA PREMIUM SIDE MENU ===== */
-.side-menu {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 320px;
-    height: 100vh;
-
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(25px);
-
-    box-shadow: -20px 0 60px rgba(0,0,0,0.25);
-    transition: right 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-
-    padding: 25px;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-}
-
-.side-menu.active {
-    right: 0;
-}
-
-/* ===== HEADER ===== */
-.menu-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 50px;
-}
-
-.menu-logo {
-    width: 130px;
-}
-
-.close-btn {
-    font-size: 22px;
-    border: none;
-    background: none;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.close-btn:hover {
-    transform: rotate(90deg);
-}
-
-/* ===== LINKS ===== */
-.menu-links {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-}
-
-.menu-links li {
-    opacity: 0;
-    transform: translateX(30px);
-    transition: all 0.4s ease;
-}
-
-/* Animate in */
-.side-menu.active .menu-links li {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-/* Stagger effect */
-.side-menu.active .menu-links li:nth-child(1) { transition-delay: 0.1s; }
-.side-menu.active .menu-links li:nth-child(2) { transition-delay: 0.2s; }
-.side-menu.active .menu-links li:nth-child(3) { transition-delay: 0.3s; }
-.side-menu.active .menu-links li:nth-child(4) { transition-delay: 0.4s; }
-.side-menu.active .menu-links li:nth-child(5) { transition-delay: 0.5s; }
-
-/* Links style */
-.menu-links a {
-    text-decoration: none;
-    font-size: 19px;
-    font-weight: 600;
-    color: #111;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    position: relative;
-    transition: 0.3s;
-}
-
-/* Gradient underline */
-.menu-links a::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -6px;
-    width: 0%;
-    height: 2px;
-    background: linear-gradient(90deg, #ff416c, #ff4b2b);
-    transition: 0.3s;
-}
-
-.menu-links a:hover::after {
-    width: 100%;
-}
-
-.menu-links a:hover {
-    color: #ff4b2b;
-    transform: translateX(6px);
-}
-
-/* ACTIVE PAGE */
-.menu-links a.active {
-    color: #ff4b2b;
-}
-
-/* ===== OVERLAY ===== */
-.menu-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
-    backdrop-filter: blur(6px);
-    opacity: 0;
-    pointer-events: none;
-    transition: 0.3s;
-    z-index: 9998;
-}
-
-.menu-overlay.active {
-    opacity: 1;
-    pointer-events: auto;
-}
     </style>
 </head>
-<body class="light-theme">
+
+<body class="dark-theme">
+
     <div id="loader">
         <div class="loader-content">
-            <div class="spinner"></div>
-           <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="loader-logo">
+            <img src="image/MEDIA BLAST.png" alt="Logo" class="loader-logo" style="width: 150px;">
         </div>
     </div>
 
-  <nav class="navbar glass sticky">
-    <a href="#home" class="logo-link">
-        <img src="image/MEDIA BLAST.png" class="nav-logo-img">
-    </a>
-
-    <button id="menu-toggle" class="menu-toggle">
-        ☰
-    </button>
-</nav>
-
-<!-- SIDE MENU -->
-<div id="side-menu" class="side-menu">
-    <a href="index.html">Home</a>
-    <a href="live.html">Live TV</a>
-    <a href="programs.html">Programs</a>
-    <a href="news.html">News</a>
-    <a href="#contact">Contact</a>
-</div>
-
-<!-- SIDE MENU -->
-<div class="side-menu" id="side-menu">
-    <div class="menu-header">
-        <img src="image/MEDIA BLAST.png" class="menu-logo">
-        <button class="close-btn" id="close-menu">
-            <i class="fas fa-times"></i>
+    <nav class="navbar glass">
+        <a href="#home" class="logo-link">
+            <img src="image/MEDIA BLAST.png" class="nav-logo-img" alt="Mediablast">
+        </a>
+        <button id="menu-toggle" class="menu-toggle">
+            <i class="fas fa-bars"></i>
         </button>
+    </nav>
+
+    <div class="menu-overlay" id="menu-overlay"></div>
+    <div class="side-menu" id="side-menu">
+        <div class="menu-header">
+            <img src="image/MEDIA BLAST.png" class="menu-logo" style="width: 120px;">
+            <button class="close-btn" id="close-menu"><i class="fas fa-times"></i></button>
+        </div>
+        <ul class="menu-links">
+            <li style="transition-delay: 0.1s;"><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li style="transition-delay: 0.2s;"><a href="live.html"><i class="fas fa-tv"></i> Live TV</a></li>
+            <li style="transition-delay: 0.3s;"><a href="programs.html"><i class="fas fa-film"></i> Programs</a></li>
+            <li style="transition-delay: 0.4s;"><a href="news.html"><i class="fas fa-newspaper"></i> News</a></li>
+            <li style="transition-delay: 0.5s;"><a href="#contact"><i class="fas fa-envelope"></i> Contact</a></li>
+        </ul>
     </div>
 
-    <ul class="menu-links">
-        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-        <li><a href="live.html"><i class="fas fa-tv"></i> Live TV</a></li>
-        <li><a href="programs.html"><i class="fas fa-film"></i> Programs</a></li>
-        <li><a href="news.html"><i class="fas fa-newspaper"></i> News</a></li>
-        <li><a href="#contact"><i class="fas fa-envelope"></i> Contact</a></li>
-    </ul>
-</div>
-
-<!-- Overlay -->
-<div class="menu-overlay" id="menu-overlay"></div>
-            <button id="theme-toggle" title="Toggle Mode"></button>
-
     <header id="home" class="hero">
-        <video autoplay muted loop class="hero-video">
+        <video autoplay muted loop class="hero-video" style="position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: -1;">
             <source src="videos/LOVEWORLD WORSHIP APP PROMO.mp4" type="video/mp4">
-            Your browser does not support the video tag.
         </video>
-        
-        <div class="hero-overlay"></div>
-        <div class="hero-content reveal">
+        <div class="hero-overlay" style="position: absolute; inset: 0; background: rgba(0,0,0,0.5);"></div>
+        <div class="hero-content" style="position: relative; z-index: 10; max-width: 800px; padding: 0 20px;">
             <h1>Reaching <br><span class="gradient-text">Every World</span></h1>
-            <p>Experience the next generation of digital media. High-definition storytelling, unfiltered news, and immersive entertainment blasted directly to you.</p>
+            <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 40px;">Experience the next generation of digital media. High-definition storytelling and immersive entertainment blasted directly to you.</p>
             <div class="cta-group">
-                <a href="live.html" class="btn btn-primary">Watch Live Now</a>
-                <a href="programs.html" class="btn btn-outline">View Schedule</a>
+                <a href="live.html" class="btn btn-primary" style="text-decoration: none; color: white;">Watch Live Now</a>
+                <a href="programs.html" class="btn btn-outline" style="text-decoration: none; color: white; border: 1px solid white; margin-left: 15px;">View Schedule</a>
             </div>
         </div>
     </header>
 
-    <section id="live-teaser" class="teaser-section reveal">
+    <section id="programs" class="programs-section" style="padding: 100px 0;">
         <div class="container">
-            <div class="teaser-glass glass">
-                <div class="teaser-content">
-                    <span class="live-indicator"><span class="pulse-dot"></span>UPCOMING</span>
-                    <h2>TESTIMONIES OF PRAISE</h2>
-                    <p>You can’t afford to miss tonight’s special episode of Testimonies of Praise, we have lots testimonies from the Loveworld Songs to share with you. Don’t miss it!</p>
-                    <a href="live.html" class="btn btn-primary">Watch Live</a>
-                </div>
-                <div class="teaser-preview">
-                    <img src="image/image_1777225763.jpg" alt="Live Preview">
-                </div>
+            <div class="section-header">
+                <h2 class="section-title">Trending <span class="gradient-text">Programs</span></h2>
+                <a href="programs.html" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="program-carousel">
+                <a href="programs.html" class="program-card-link">
+                    <div class="program-card glass">
+                        <div class="card-img" style="background-image: url('image/image_1777225763.jpg'); background-size: cover;">
+                            <span class="live-tag">LIVE</span>
+                        </div>
+                        <div class="card-body">
+                            <h3>TESTIMONIES OF PRAISE</h3>
+                            <p>Don't miss tonight's special episode featuring powerful testimonies from around the globe.</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="programs.html" class="program-card-link">
+                    <div class="program-card glass">
+                        <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1504711432869-5d592f239cff?auto=format&fit=crop&q=60&w=800'); background-size: cover;"></div>
+                        <div class="card-body">
+                            <h3>The News Blast</h3>
+                            <p>Rapid-fire global updates, delivered unfiltered and direct to your screen.</p>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
     </section>
 
-<section id="programs" class="programs-section reveal">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Trending <span class="gradient-text">Programs</span></h2>
-            <a href="programs.html" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
-        </div>
-
-        <div class="program-carousel">
-            <a href="programs.html" class="program-card-link">
-                <div class="program-card glass">
-                    <div class="card-img" style="background-image: url('image/image_1777225763.jpg')">
-                        <span class="live-tag">LIVE</span>
-                    </div>
-                    <div class="card-body">
-                        <h3>TESTIMONIES OF PRAISE</h3>
-                        <p>You can’t afford to miss tonight’s special episode of Testimonies of Praise, we have lots testimonies from the Loveworld Songs to share with you. Don’t miss it!</p>
-                    </div>
-                </div>
-            </a>
-            
-            <a href="programs.html" class="program-card-link">
-                <div class="program-card glass">
-                    <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1504711432869-5d592f239cff?auto=format&fit=crop&q=60&w=800')"></div>
-                    <div class="card-body">
-                        <h3>The News Blast</h3>
-                        <p>Rapid-fire global updates, delivered unfiltered.</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="programs.html" class="program-card-link">
-                <div class="program-card glass">
-                    <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=60&w=800')"></div>
-                    <div class="card-body">
-                        <h3>Mediablast Specials</h3>
-                        <p>Exclusive documentaries and cinematic stories.</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="programs.html" class="program-card-link">
-                <div class="program-card glass">
-                    <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=60&w=800')"></div>
-                    <div class="card-body">
-                        <h3>Midnight Vibes</h3>
-                        <p>Late-night sets from top digital artists.</p>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </div>
-</section>
-
-    <section id="blog" class="blog-section reveal">
+    <section id="contact" class="contact-section" style="padding: 100px 0;">
         <div class="container">
-            <h2 class="section-title">Inside <span class="gradient-text">Mediablast</span></h2>
-            <div class="filter-controls glass">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="blogSearch" placeholder="Search news articles...">
+            <div class="contact-grid glass">
+                <div class="contact-info">
+                    <h2 class="gradient-text" style="font-size: 3rem;">Contact Us</h2>
+                    <p>Our newsroom is open 24/7. Reach out for tips or partnerships.</p>
+                    <div class="info-details" style="margin-top: 30px;">
+                        <p><i class="fas fa-envelope" style="margin-right: 10px;"></i> @mediablastnetwork</p>
+                        <p><i class="fas fa-map-marker-alt" style="margin-right: 10px;"></i> Asese, Maba</p>
+                    </div>
                 </div>
-                <div class="filter-btns">
-                    <button class="filter-btn active" data-filter="all">All</button>
-                    <button class="filter-btn" data-filter="tech">Tech</button>
-                    <button class="filter-btn" data-filter="media">Media</button>
-                </div>
+
+                <form action="https://formspree.io/f/meepelvp" method="POST" class="contact-form">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" name="name" placeholder="Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" name="email" placeholder="email@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea name="message" placeholder="How can we help?" required rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
             </div>
-            <div class="blog-grid" id="blogGrid"></div>
         </div>
     </section>
 
-    <div class="social-float">
+    <div class="social-float" id="social-float">
         <div class="social-trigger"><i class="fas fa-plus"></i></div>
         <div class="social-icons">
-            <a href="https://kingschat.online/user/mediablastnetwork" class="social-link kc-link" target="_blank" rel="noopener noreferrer">
-                <img src="image/Kc.png" alt="KingsChat" class="custom-soc-icon">
-            </a>
-            <a href="https://x.com/mediablastnet?s=20" class="social-link" target="_blank" rel="noopener noreferrer" title="Twitter"><i class="fab fa-twitter"></i></a>
-            <a href="https://youtube.com/@mediablastnetwork" class="social-link" target="_blank" rel="noopener noreferrer" title="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://kingschat.online/user/mediablastnetwork" class="social-link" target="_blank"><img src="image/Kc.png" class="custom-soc-icon"></a>
+            <a href="https://x.com/mediablastnet" class="social-link" target="_blank"><i class="fab fa-twitter"></i></a>
+            <a href="https://youtube.com/@mediablastnetwork" class="social-link" target="_blank"><i class="fab fa-youtube"></i></a>
         </div>
     </div>
-<section id="contact" class="contact-section reveal">
-    <div class="container">
-        <div class="contact-grid glass">
-            
-            <div class="contact-info">
-                <h2 class="gradient-text">Contact Us</h2>
-                <p>Have a tip, a story, or a partnership inquiry? Our newsroom is open 24/7.</p>
-                <div class="info-details">
-                    <div class="info-item">
-                        <i class="fas fa-envelope"></i>
-                        <span>@mediablastnetwork</span>
-                    </div>
-                    <div class="info-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>Asese, Maba</span>
-                    </div>
-                </div>
-                <div class="contact-socials">
-                    <a href="https://x.com/mediablastnet" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
-                    <a href="https://kingschat.online/user/mediablastnetwork" target="_blank" rel="noopener noreferrer">
-                        <img src="image/Kc.png" alt="KingsChat" class="contact-kc-icon">
-                    </a>
-                    <a href="https://youtube.com/@mediablastnetwork" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
-                </div>
-            </div>
 
-            <form action="https://formspree.io/f/meepelvp" method="POST" id="contactForm" class="contact-form">
-                <div class="form-group">
-                    <label>Name</label>
-                    <input type="text" name="name" placeholder="Enter your full name" required>
-                </div>
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" name="email" placeholder="your@email.com" required>
-                </div>
-                <div class="form-group">
-                    <label>How can we help?</label>
-                    <textarea name="message" placeholder="Message" required rows="4"></textarea>
-                </div>
-                <button type="submit" class="submit-btn">
-                    Send Message
-                </button>
-                <p id="form-status"></p>
-            </form>
-
-        </div>
-    </div>
-</section>
-
-    <script src="script.js"></script>
-
-<script src="script.js"></script>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    /* ================= SOCIAL FLOAT ================= */
-    const socialTrigger = document.querySelector('.social-trigger');
-    const socialFloat = document.querySelector('.social-float');
-
-    if (socialTrigger && socialFloat) {
-        socialTrigger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            socialFloat.classList.toggle('active');
+    <script>
+        // Loader timeout
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').style.opacity = '0';
+                setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+            }, 1000);
         });
 
-        document.addEventListener('click', (e) => {
-            if (!socialFloat.contains(e.target)) {
-                socialFloat.classList.remove('active');
-            }
-        });
-    }
+        // Side Menu Logic
+        const menuToggle = document.getElementById('menu-toggle');
+        const closeMenu = document.getElementById('close-menu');
+        const sideMenu = document.getElementById('side-menu');
+        const overlay = document.getElementById('menu-overlay');
 
-    /* ================= SIDE MENU ================= */
-    const menuToggle = document.getElementById('menu-toggle');
-    const sideMenu = document.getElementById('side-menu');
-    const closeMenu = document.getElementById('close-menu');
-    const overlay = document.getElementById('menu-overlay');
-
-    if (menuToggle && sideMenu) {
         menuToggle.addEventListener('click', () => {
             sideMenu.classList.add('active');
-            if (overlay) overlay.classList.add('active');
+            overlay.classList.add('active');
         });
-    }
 
-    if (closeMenu) {
-        closeMenu.addEventListener('click', () => {
-            sideMenu.classList.remove('active');
-            if (overlay) overlay.classList.remove('active');
+        [closeMenu, overlay].forEach(btn => {
+            btn.addEventListener('click', () => {
+                sideMenu.classList.remove('active');
+                overlay.classList.remove('active');
+            });
         });
-    }
 
-    if (overlay) {
-        overlay.addEventListener('click', () => {
-            sideMenu.classList.remove('active');
-            overlay.classList.remove('active');
+        // Social Bubble
+        const socialTrigger = document.querySelector('.social-trigger');
+        const socialFloat = document.getElementById('social-float');
+        socialTrigger.addEventListener('click', () => socialFloat.classList.toggle('active'));
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                nav.style.padding = '12px 6%';
+                nav.style.background = 'rgba(10, 10, 10, 0.9)';
+            } else {
+                nav.style.padding = '20px 6%';
+                nav.style.background = 'transparent';
+            }
         });
-    }
-
-});
-    /* ===== ACTIVE LINK DETECTION ===== */
-const links = document.querySelectorAll('.menu-links a');
-const currentPage = window.location.pathname.split("/").pop();
-
-links.forEach(link => {
-    const href = link.getAttribute("href");
-    if (href === currentPage) {
-        link.classList.add("active");
-    }
-});
-    links.forEach(link => {
-    link.addEventListener("click", () => {
-        link.style.transform = "scale(0.95)";
-    });
-});
-</script>
+    </script>
 </body>
 </html>
