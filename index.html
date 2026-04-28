@@ -444,6 +444,47 @@ body.dark-theme .contact-form textarea {
 /* Hide old nav links */
 .nav-links {
     display: none !important;
+
+    /* ===== HAMBURGER BUTTON ===== */
+.menu-toggle {
+    font-size: 28px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 2000;
+}
+
+/* ===== HIDE OLD NAV LINKS ===== */
+.nav-links {
+    display: none !important;
+}
+
+/* ===== SIDE MENU ===== */
+.side-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 250px;
+    height: 100%;
+    background: white;
+    padding: 80px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: 0.3s ease;
+    z-index: 1999;
+}
+
+.side-menu a {
+    text-decoration: none;
+    font-size: 18px;
+    color: #111;
+}
+
+/* ACTIVE STATE */
+.side-menu.active {
+    right: 0;
+}
 }
     </style>
 </head>
@@ -460,11 +501,19 @@ body.dark-theme .contact-form textarea {
         <img src="image/MEDIA BLAST.png" class="nav-logo-img">
     </a>
 
-    <!-- Hamburger -->
-    <button class="menu-toggle" id="menu-toggle">
-        <i class="fas fa-bars"></i>
+    <button id="menu-toggle" class="menu-toggle">
+        ☰
     </button>
 </nav>
+
+<!-- SIDE MENU -->
+<div id="side-menu" class="side-menu">
+    <a href="index.html">Home</a>
+    <a href="live.html">Live TV</a>
+    <a href="programs.html">Programs</a>
+    <a href="news.html">News</a>
+    <a href="#contact">Contact</a>
+</div>
 
 <!-- SIDE MENU -->
 <div class="side-menu" id="side-menu">
@@ -702,6 +751,5 @@ overlay.addEventListener('click', () => {
     overlay.classList.remove('active');
 });
 </script>
-    </script>
 </body>
 </html>
