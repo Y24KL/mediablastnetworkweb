@@ -1,6 +1,6 @@
 {
-  "status": "offline",
-  "liveStream": "https://cdnstack.internetmultimediaonline.org/lwsat/lwsat.stream/playlist.m3u8",
-  "title": "Glorious in all your ways ",
+  "status": "live",
+  "liveStream": "https://vcpout-lw-wdc-01-sp.ceflixcdn.com/lxp/play1/playlist.m3u8",
+  "title": "MAY COMMUNION SERVICE WITH PASTOR CHRIS ",
   "heroVideo": "https://res.cloudinary.com/duw6xrnpn/video/upload/v1775429666/GLORIOUS_IN_ALL_YOUR_WAYS_j6hfbn.mp4"
 }
