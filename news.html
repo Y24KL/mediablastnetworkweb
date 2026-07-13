@@ -3,42 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>News | Mediablasst Network</title>
+    <title>News | Mediablast Network</title>
     <link rel="icon" type="image/png" href="image/MEDIA BLAST.png?v=2">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="Light-theme">
-      <nav class="navbar glass sticky">
+<body>
+
+<nav class="navbar navbar-solid">
     <a href="index.html" class="logo-link">
         <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="nav-logo-img">
     </a>
+    <button id="menu-toggle" class="menu-toggle" aria-label="Open menu">
+        <i class="fas fa-bars"></i>
+    </button>
+</nav>
 
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="live.html">Live TV</a></li>
-            <li><a href="programs.html">Programs</a></li>
-            <li><a href="news.html" class="active">News</a></li>
-            <li><a href="index.html#contact">Contact</a></li>
-        </ul>
-    </nav>
+<div class="menu-overlay" id="menu-overlay"></div>
+<div class="side-menu" id="side-menu">
+    <div class="menu-header">
+        <img src="image/MEDIA BLAST.png" class="menu-logo" style="width: 120px;">
+        <button class="close-btn" id="close-menu" aria-label="Close menu"><i class="fas fa-times"></i></button>
+    </div>
+    <ul class="menu-links">
+        <li style="transition-delay: 0.1s;"><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li style="transition-delay: 0.2s;"><a href="live.html"><i class="fas fa-tv"></i> Live TV</a></li>
+        <li style="transition-delay: 0.3s;"><a href="programs.html"><i class="fas fa-film"></i> Programs</a></li>
+        <li style="transition-delay: 0.4s;"><a href="specials.html"><i class="fas fa-star"></i> Specials</a></li>
+        <li style="transition-delay: 0.5s;"><a href="news.html" class="active"><i class="fas fa-newspaper"></i> News</a></li>
+        <li style="transition-delay: 0.6s;"><a href="index.html#contact"><i class="fas fa-envelope"></i> Contact</a></li>
+    </ul>
+</div>
 
-    <section id="blog" class="blog-section" style="padding-top: 120px;">
-        <div class="container">
-            <h2 class="section-title">Inside <span class="gradient-text">Mediablast Network</span></h2>
-            
-            <div class="filter-controls">
+<header class="page-header">
+    <h1>Inside <span class="gradient-text">Mediablast Network</span></h1>
+</header>
+
+<section id="blog" class="blog-section">
+    <div class="container">
+        <div class="filter-controls glass">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
                 <input type="text" id="blogSearch" placeholder="Search news articles...">
-                <div class="filter-btns">
-                    <button class="filter-btn active" data-filter="all">All Stories</button>
-                </div>
             </div>
-
-            <div class="blog-grid" id="blogGrid">
-                </div>
+            <div class="filter-btns">
+                <button class="filter-btn active" data-filter="all">All Stories</button>
+                <button class="filter-btn" data-filter="tech">Tech</button>
+                <button class="filter-btn" data-filter="media">Media</button>
+            </div>
         </div>
-    </section>
 
-    <script src="script.js"></script>
+        <div class="blog-grid" id="blogGrid"></div>
+    </div>
+</section>
+
+<script src="js/config.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

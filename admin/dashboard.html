@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — MediaBlast Network</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="../image/MEDIA BLAST.png?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../admin.css">
+</head>
+<body class="admin-body">
+
+<header class="admin-header">
+  <div class="container">
+    <div class="nav-brand">
+      <img src="../image/MEDIA BLAST.png" alt="MediaBlast logo" class="mark">
+      MediaBlast <span class="text-gradient">Admin</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <span id="adminEmail" style="font-size:.85rem;opacity:.75;"></span>
+      <button id="logoutBtn" class="btn btn-outline btn-sm">Log Out</button>
+    </div>
+  </div>
+</header>
+
+<main class="admin-shell">
+  <div class="container">
+
+    <div class="site-tabs" id="siteTabs">
+      <button type="button" class="site-tab" data-site="network">MediaBlast Network</button>
+      <button type="button" class="site-tab" data-site="specials">MediaBlast Specials</button>
+    </div>
+
+    <!-- ==================== MEDIABLAST NETWORK ==================== -->
+    <div id="panels-network" class="admin-grid">
+
+      <!-- Network: Hero -->
+      <div class="admin-panel">
+        <h2>Hero Title, Tagline &amp; CTA</h2>
+        <form id="netHeroForm">
+          <div class="form-row">
+            <label for="netHeroTitle">Title</label>
+            <input type="text" id="netHeroTitle" name="title">
+          </div>
+          <div class="form-row">
+            <label for="netHeroTagline">Tagline</label>
+            <textarea id="netHeroTagline" name="tagline" rows="3"></textarea>
+          </div>
+          <div class="form-row">
+            <label for="netHeroCtaText">CTA Button Text</label>
+            <input type="text" id="netHeroCtaText" name="ctaText">
+          </div>
+          <div class="form-row">
+            <label for="netHeroCtaLink">CTA Button Link</label>
+            <input type="text" id="netHeroCtaLink" name="ctaLink" placeholder="live.html">
+          </div>
+          <button type="submit" class="btn btn-net btn-sm">Save Hero</button>
+          <div class="admin-status-msg" data-status-for="netHeroForm"></div>
+        </form>
+      </div>
+
+      <!-- Network: Live Stream -->
+      <div class="admin-panel">
+        <h2>Live TV Settings <span id="netLiveBadgePreview" class="badge-mini offline">OFFLINE</span></h2>
+        <form id="netLiveForm">
+          <div class="toggle-row">
+            <label for="netLiveStatus" style="font-size:.85rem;">Status</label>
+            <select id="netLiveStatus" name="status">
+              <option value="offline">Offline</option>
+              <option value="live">Live</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="netLiveTitle">Stream Title</label>
+            <input type="text" id="netLiveTitle" name="streamTitle">
+          </div>
+          <div class="form-row">
+            <label for="netLiveYoutube">YouTube Link <span style="font-weight:400;opacity:.6;">(priority #1)</span></label>
+            <input type="text" id="netLiveYoutube" name="youtubeLink" placeholder="https://www.youtube.com/watch?v=...">
+          </div>
+          <div class="form-row">
+            <label for="netLiveM3u8">m3u8 Stream URL <span style="font-weight:400;opacity:.6;">(priority #2)</span></label>
+            <input type="text" id="netLiveM3u8" name="m3u8Url" placeholder="https://.../playlist.m3u8">
+          </div>
+          <div class="form-row">
+            <label for="netLiveOffline">Offline Background Video URL</label>
+            <input type="text" id="netLiveOffline" name="offlineVideoUrl">
+          </div>
+          <button type="submit" class="btn btn-net btn-sm">Save Live Settings</button>
+          <div class="admin-status-msg" data-status-for="netLiveForm"></div>
+        </form>
+      </div>
+
+      <!-- Network: Programs -->
+      <div class="admin-panel" style="grid-column: 1 / -1;">
+        <h2>Programs</h2>
+        <p style="color:rgba(255,255,255,.65);font-size:.85rem;margin-top:-6px;">
+          Shown in the "Trending Programs" strip and on the Programs page. A video URL (YouTube
+          embed link) makes the card open a preview player; otherwise the image is shown.
+        </p>
+        <div id="netProgramsList"></div>
+        <form id="netProgramAddForm" style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+          <input type="text" name="title" placeholder="Program title" required style="flex:1;min-width:160px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:10px 12px;color:#fff;">
+          <input type="text" name="tag" placeholder="Tag (e.g. NOW, Daily)" style="flex:1;min-width:120px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:10px 12px;color:#fff;">
+          <input type="text" name="description" placeholder="Description" style="flex:2;min-width:200px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:10px 12px;color:#fff;">
+          <input type="text" name="imageUrl" placeholder="Image URL" style="flex:1;min-width:160px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:10px 12px;color:#fff;">
+          <input type="text" name="videoUrl" placeholder="YouTube embed URL (optional)" style="flex:1;min-width:160px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:10px 12px;color:#fff;">
+          <button type="submit" class="btn btn-net btn-sm">Add Program</button>
+        </form>
+        <div class="admin-status-msg" data-status-for="netProgramAddForm"></div>
+      </div>
+
+      <!-- Network: Socials -->
+      <div class="admin-panel">
+        <h2>Social Links</h2>
+        <form id="netSocialsForm">
+          <div class="form-row">
+            <label for="netSocialYoutube">YouTube</label>
+            <input type="text" id="netSocialYoutube" name="youtube">
+          </div>
+          <div class="form-row">
+            <label for="netSocialKingschat">KingsChat</label>
+            <input type="text" id="netSocialKingschat" name="kingschat">
+          </div>
+          <div class="form-row">
+            <label for="netSocialTwitter">X / Twitter</label>
+            <input type="text" id="netSocialTwitter" name="twitter">
+          </div>
+          <button type="submit" class="btn btn-net btn-sm">Save Socials</button>
+          <div class="admin-status-msg" data-status-for="netSocialsForm"></div>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- ==================== MEDIABLAST SPECIALS ==================== -->
+    <div id="panels-specials" class="admin-grid" style="display:none;">
+
+      <!-- Hero -->
+      <div class="admin-panel specials-panel">
+        <h2>Hero Tagline &amp; CTA</h2>
+        <form id="heroForm">
+          <div class="form-row">
+            <label for="heroTagline">Tagline</label>
+            <textarea id="heroTagline" name="tagline" rows="3"></textarea>
+          </div>
+          <div class="form-row">
+            <label for="heroCtaText">CTA Button Text</label>
+            <input type="text" id="heroCtaText" name="ctaText">
+          </div>
+          <div class="form-row">
+            <label for="heroCtaLink">CTA Button Link</label>
+            <input type="text" id="heroCtaLink" name="ctaLink" placeholder="#contact">
+          </div>
+          <button type="submit" class="btn btn-gold btn-sm">Save Hero</button>
+          <div class="admin-status-msg" data-status-for="heroForm"></div>
+        </form>
+      </div>
+
+      <!-- Live Stream -->
+      <div class="admin-panel specials-panel">
+        <h2>Watch Live Settings <span id="liveBadgePreview" class="badge-mini offline">OFFLINE</span></h2>
+        <form id="liveForm">
+          <div class="form-row">
+            <label for="liveVideoId">YouTube Video ID</label>
+            <input type="text" id="liveVideoId" name="videoId" placeholder="e.g. dQw4w9WgXcQ">
+          </div>
+          <div class="toggle-row">
+            <label for="liveStatus" style="font-size:.85rem;">Status</label>
+            <select id="liveStatus" name="status">
+              <option value="offline">Offline</option>
+              <option value="live">Live</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="liveNext">Next Stream Date/Time</label>
+            <input type="datetime-local" id="liveNext" name="nextStreamAt">
+          </div>
+          <div class="form-row">
+            <label for="liveChannel">YouTube Channel URL</label>
+            <input type="text" id="liveChannel" name="channelUrl">
+          </div>
+          <button type="submit" class="btn btn-gold btn-sm">Save Live Settings</button>
+          <div class="admin-status-msg" data-status-for="liveForm"></div>
+        </form>
+      </div>
+
+      <!-- Gallery -->
+      <div class="admin-panel specials-panel" style="grid-column: 1 / -1;">
+        <h2>Episodes / Showcase</h2>
+        <p style="color:rgba(255,255,255,.65);font-size:.85rem;margin-top:-6px;">
+          Fill in a YouTube Video ID <em>or</em> a Google Drive File ID to make a card playable —
+          visitors click it to watch that clip in a popup player. If both are set, YouTube is used.
+          A Drive file must be shared as "Anyone with the link" to play; heavy traffic can hit
+          Drive's daily quota, so YouTube (Unlisted works too) is recommended when possible.
+        </p>
+        <div id="galleryList"></div>
+        <form id="galleryAddForm" style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+          <input type="text" name="title" placeholder="Episode title" required style="flex:1;min-width:160px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:10px 12px;color:#fff;">
+          <input type="text" name="imageUrl" placeholder="Image URL (optional)" style="flex:1;min-width:160px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:10px 12px;color:#fff;">
+          <input type="text" name="videoId" placeholder="YouTube Video ID (optional)" style="flex:1;min-width:160px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:10px 12px;color:#fff;">
+          <input type="text" name="driveFileId" placeholder="Google Drive File ID (optional)" style="flex:1;min-width:160px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:10px 12px;color:#fff;">
+          <button type="submit" class="btn btn-gold btn-sm">Add Episode</button>
+        </form>
+        <div class="admin-status-msg" data-status-for="galleryAddForm"></div>
+      </div>
+
+      <!-- Socials -->
+      <div class="admin-panel specials-panel">
+        <h2>Social Links</h2>
+        <form id="socialsForm">
+          <div class="form-row">
+            <label for="socialYoutube">YouTube</label>
+            <input type="text" id="socialYoutube" name="youtube">
+          </div>
+          <div class="form-row">
+            <label for="socialInstagram">Instagram</label>
+            <input type="text" id="socialInstagram" name="instagram">
+          </div>
+          <div class="form-row">
+            <label for="socialKingschat">KingsChat</label>
+            <input type="text" id="socialKingschat" name="kingschat">
+          </div>
+          <div class="form-row">
+            <label for="socialTwitter">X / Twitter</label>
+            <input type="text" id="socialTwitter" name="twitter">
+          </div>
+          <button type="submit" class="btn btn-gold btn-sm">Save Socials</button>
+          <div class="admin-status-msg" data-status-for="socialsForm"></div>
+        </form>
+      </div>
+
+      <!-- Contact submissions -->
+      <div class="admin-panel specials-panel">
+        <h2>Contact Submissions</h2>
+        <p style="color:rgba(255,255,255,.72);font-size:.9rem;">
+          Contact form submissions are delivered by Formspree directly to your inbox
+          and archived on your Formspree dashboard.
+        </p>
+        <a href="https://formspree.io/forms" target="_blank" rel="noopener" class="btn btn-outline btn-sm">Open Formspree Dashboard</a>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script>window.MB_ADMIN_DEFAULT_SITE = 'network';</script>
+<script src="../js/config.js"></script>
+<script src="../js/admin-dashboard.js"></script>
+</body>
+</html>

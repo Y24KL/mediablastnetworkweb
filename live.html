@@ -4,123 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LIVE | Mediablast Network</title>
-
     <link rel="icon" type="image/png" href="image/MEDIA BLAST.png?v=2">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
-
-    <style>
-        /* Existing Styles */
-        .video-wrapper {
-            background: #000;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.1);
-            aspect-ratio: 16 / 9;
-        }
-
-        #live-player, #bg-video {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        .back-home {
-            color: white;
-            text-decoration: none;
-            font-size: 14px;
-            margin-left: 20px;
-            padding: 8px 14px;
-            border-radius: 20px;
-            background: rgba(255,255,255,0.1);
-            transition: 0.3s;
-        }
-
-        .back-home:hover { background: rgba(255,255,255,0.2); }
-
-        .live-indicator {
-            display: none;
-            align-items: center;
-            gap: 5px;
-            color: #ff4d4d;
-            font-weight: bold;
-        }
-
-        #media-container iframe, #media-container video {
-            border-radius: 20px;
-        }
-
-        /* --- MODAL STYLES (REQUIRED) --- */
-        .stream-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            z-index: 10000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.5s ease;
-        }
-
-        .stream-overlay.fade-out {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .stream-modal {
-            background: #1a1a1a;
-            color: white;
-            border-radius: 24px;
-            padding: 40px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .modal-header h2 { margin: 0 0 10px; font-size: 1.4rem; }
-        .modal-header p { color: #888; font-size: 0.9rem; margin-bottom: 25px; }
-
-        .input-group { text-align: left; margin-bottom: 20px; }
-        .input-group label { display: block; font-size: 0.7rem; color: #aaa; margin-bottom: 8px; text-transform: uppercase; }
-
-        .input-group input[type="text"] {
-            width: 100%;
-            background: #000;
-            border: 1px solid #333;
-            padding: 12px;
-            border-radius: 10px;
-            color: white;
-            outline: none;
-        }
-
-        .stepper { display: flex; background: #000; border-radius: 10px; border: 1px solid #333; overflow: hidden; }
-        .step-btn { background: none; border: none; color: white; padding: 10px 20px; cursor: pointer; font-size: 1.2rem; flex: 1; }
-        .step-btn:hover { background: #222; }
-        .stepper input { width: 50px; background: none; border: none; text-align: center; color: white; pointer-events: none; }
-
-        .cta-btn {
-            width: 100%;
-            background: #ff4d4d;
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .cta-btn:hover { background: #ff3333; transform: translateY(-2px); }
-
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    </style>
 </head>
 
 <body class="live-theater-mode">
@@ -136,27 +28,28 @@
             <span class="live-indicator">
                 <i class="fas fa-circle"></i> LIVE
             </span>
-            <a href="index.html" class="back-home">← Back to Home</a>
+            <a href="index.html" class="back-home">&larr; Back to Home</a>
         </div>
     </nav>
 
-   <main class="live-compact-container">
-    <section class="video-section-compact">
-        <div id="media-container" style="width: 100%; max-width: 900px; aspect-ratio: 16/9; background: #000; border-radius: 20px; overflow: hidden; margin: 20px auto; position: relative;">
-            <div id="placeholder-text" style="color:white; text-align:center; padding-top:20%;">Welcome! Please join to start the stream.</div>
+    <main class="live-compact-container">
+        <section class="video-section-compact">
+            <div id="media-container" class="video-wrapper">
+                <div id="placeholder-text" style="color:white; text-align:center; padding-top:20%;">Welcome! Please join to start the stream.</div>
             </div>
-        <div class="video-details-compact" style="text-align: center;">
-            <h1 id="stream-title" style="color: white; font-size: 1.5rem; margin-top: 15px;">Live Stream</h1>
-        </div>
-    </section>
-</main>
+            <div class="video-details-compact">
+                <h1 id="stream-title">Live Stream</h1>
+            </div>
+        </section>
+    </main>
+</div>
 
 <div id="pre-stream-overlay" class="stream-overlay">
     <div class="stream-modal glass">
         <div class="modal-header">
             <div class="live-badge"><span class="pulse"></span> LIVE</div>
             <h2>Mediablast Network</h2>
-            <p>Tell us who’s watching with you 🍿</p>
+            <p>Tell us who's watching with you</p>
         </div>
         <form id="viewer-form">
             <div class="input-group">
@@ -166,7 +59,7 @@
             <div class="input-group">
                 <label>Number of people watching <span class="optional-tag">(Optional)</span></label>
                 <div class="stepper">
-                    <button type="button" id="step-down" class="step-btn">−</button>
+                    <button type="button" id="step-down" class="step-btn">&minus;</button>
                     <input type="number" id="viewer-count" value="1" min="1">
                     <button type="button" id="step-up" class="step-btn">+</button>
                 </div>
@@ -179,8 +72,9 @@
     </div>
 </div>
 
+<script src="js/config.js"></script>
 <script>
-// --- FIREBASE CONFIG ---
+// --- FIREBASE CONFIG (viewer presence / "who's watching" only) ---
 const firebaseConfig = {
     apiKey: "AIzaSyDzDUQ1i_CPP_nL4aTefmKPADzM-UVcCt0",
     authDomain: "mbn-web-828e8.firebaseapp.com",
@@ -191,111 +85,134 @@ const firebaseConfig = {
     appId: "1:432152602008:web:a492785cad9a1219b337ed",
     measurementId: "G-FP2CCWHF13"
 };
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+// Viewer-presence tracking only — if the Firebase SDK fails to load (CDN
+// hiccup, ad blocker), the stream itself must still work, so this is
+// guarded rather than a hard dependency for the rest of the page.
+let database = null;
+try {
+    firebase.initializeApp(firebaseConfig);
+    database = firebase.database();
+} catch (err) {
+    console.error('Firebase unavailable, continuing without viewer tracking.', err);
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     const overlay = document.getElementById('pre-stream-overlay');
     const form = document.getElementById('viewer-form');
-    const skipLink = document.getElementById('skip-link'); // Added skip link reference
+    const skipLink = document.getElementById('skip-link');
     const nameInput = document.getElementById('viewer-name');
     const countInput = document.getElementById('viewer-count');
     const stepUp = document.getElementById('step-up');
     const stepDown = document.getElementById('step-down');
 
-    // Restore name if previously entered
-    if(localStorage.getItem('mbn_name')) nameInput.value = localStorage.getItem('mbn_name');
+    if (localStorage.getItem('mbn_name')) nameInput.value = localStorage.getItem('mbn_name');
 
-    // Stepper logic
     stepUp.onclick = () => countInput.value = parseInt(countInput.value) + 1;
-    stepDown.onclick = () => { if(parseInt(countInput.value) > 1) countInput.value = parseInt(countInput.value) - 1; };
+    stepDown.onclick = () => { if (parseInt(countInput.value) > 1) countInput.value = parseInt(countInput.value) - 1; };
 
-    // Common function to enter the stream
     const enterStream = () => {
         overlay.classList.add('fade-out');
-        syncWithCMS();
+        syncLiveContent();
         setTimeout(() => overlay.remove(), 500);
     };
 
-    // Skip Logic (Anonymous Entry)
-    skipLink.onclick = (e) => {
-        e.preventDefault();
-        enterStream();
-    };
+    skipLink.onclick = (e) => { e.preventDefault(); enterStream(); };
 
-    // Form Logic (Data-Entry)
     form.onsubmit = async (e) => {
         e.preventDefault();
-        
         const viewerData = {
             name: nameInput.value.trim() || "Anonymous",
             groupSize: parseInt(countInput.value) || 1,
             timestamp: Date.now()
         };
-
         try {
-            // Save to Firebase
-            await database.ref('stream_entries').push(viewerData);
-            const presenceRef = database.ref('liveViewers').push(viewerData.groupSize);
-            presenceRef.onDisconnect().remove();
-
-            if(viewerData.name !== "Anonymous") {
-                localStorage.setItem('mbn_name', viewerData.name);
+            if (database) {
+                await database.ref('stream_entries').push(viewerData);
+                const presenceRef = database.ref('liveViewers').push(viewerData.groupSize);
+                presenceRef.onDisconnect().remove();
             }
-            
+            if (viewerData.name !== "Anonymous") localStorage.setItem('mbn_name', viewerData.name);
             enterStream();
         } catch (err) {
             console.error("Firebase Error:", err);
-            enterStream(); // Enter stream anyway if Firebase fails
+            enterStream();
         }
     };
 });
 
-// --- CMS & PLAYER ---
-async function syncWithCMS() {
+/* --- Player: source of truth is the shared backend's network `live` object,
+   falling back to the static data/links.json if the backend is unreachable --- */
+async function syncLiveContent() {
     const container = document.getElementById('media-container');
     const liveIndicator = document.querySelector('.live-indicator');
     const titleHeader = document.getElementById('stream-title');
+    const apiBase = (window.MB_CONFIG && window.MB_CONFIG.API_BASE) || '';
 
-    try {
-        const res = await fetch('/data/links.json?nocache=' + Date.now());
-        const data = await res.json();
+    let data = null;
+    if (apiBase) {
+        try {
+            const res = await fetch(apiBase + '/api/network/content');
+            if (res.ok) {
+                const content = await res.json();
+                data = {
+                    status: content.live.status,
+                    title: content.live.streamTitle,
+                    youtubeLink: content.live.youtubeLink,
+                    m3u8_url: content.live.m3u8Url,
+                    background_video: content.live.offlineVideoUrl,
+                };
+            }
+        } catch (err) {
+            console.error('Network content fetch failed, falling back to static config.', err);
+        }
+    }
 
-        if (data.title) titleHeader.innerText = data.title;
-        const ytId = getYouTubeID(data.youtubeLink);
-        const streamUrl = data.liveStream || "";
-
-        if (data.status !== "live") {
-            showOfflineMode(container, liveIndicator, data.heroVideo);
+    if (!data) {
+        try {
+            const res = await fetch('data/links.json?nocache=' + Date.now());
+            const fallback = await res.json();
+            data = {
+                status: fallback.status,
+                title: fallback.title,
+                youtubeLink: fallback.youtubeLink,
+                m3u8_url: fallback.liveStream,
+                background_video: fallback.heroVideo,
+            };
+        } catch (err) {
+            console.error('Static fallback also failed.', err);
             return;
         }
+    }
 
-        liveIndicator.style.display = "inline-flex";
+    if (data.title) titleHeader.innerText = data.title;
+    const ytId = getYouTubeID(data.youtubeLink);
+    const streamUrl = data.m3u8_url || '';
 
-        if (ytId) {
-            container.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${ytId}?autoplay=1&mute=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
-        } 
-        else if (streamUrl.includes(".m3u8")) {
-            container.innerHTML = `<video id="live-player" controls autoplay playsinline style="width:100%; height:100%;"></video>`;
-            const video = document.getElementById('live-player');
-            if (Hls.isSupported()) {
-                const hls = new Hls();
-                hls.loadSource(streamUrl);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-            } else {
-                video.src = streamUrl;
-            }
+    if (data.status !== 'live') {
+        showOfflineMode(container, liveIndicator, data.background_video);
+        return;
+    }
+
+    liveIndicator.style.display = 'inline-flex';
+
+    if (ytId) {
+        container.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${ytId}?autoplay=1&mute=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    } else if (streamUrl.includes('.m3u8')) {
+        container.innerHTML = `<video id="live-player" controls autoplay playsinline></video>`;
+        const video = document.getElementById('live-player');
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(streamUrl);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+        } else {
+            video.src = streamUrl;
         }
-    } catch (err) {
-        console.error("Sync Error:", err);
     }
 }
 
 function showOfflineMode(container, indicator, videoUrl) {
-    if (indicator) indicator.style.display = "none";
+    if (indicator) indicator.style.display = 'none';
     container.innerHTML = `
       <div style="position: relative; width: 100%; height: 100%;">
           <video id="bg-video" autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover;">
@@ -321,8 +238,5 @@ function getYouTubeID(url) {
     return (match && match[2].length === 11) ? match[2] : null;
 }
 </script>
-
 </body>
 </html>
-
-// ... rest of your showOfflineMode function
