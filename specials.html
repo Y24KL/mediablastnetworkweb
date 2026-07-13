@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Specials | Mediablast Network</title>
+    <meta name="description" content="Mediablast Specials — rapid-fire episodes and live broadcasts, now inside Mediablast Network.">
+    <link rel="icon" type="image/png" href="image/MEDIA BLAST.png?v=2">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar navbar-solid">
+    <a href="index.html" class="logo-link">
+        <img src="image/MEDIA BLAST.png" alt="Mediablast Logo" class="nav-logo-img">
+    </a>
+    <button id="menu-toggle" class="menu-toggle" aria-label="Open menu">
+        <i class="fas fa-bars"></i>
+    </button>
+</nav>
+
+<div class="menu-overlay" id="menu-overlay"></div>
+<div class="side-menu" id="side-menu">
+    <div class="menu-header">
+        <img src="image/MEDIA BLAST.png" class="menu-logo" style="width: 120px;">
+        <button class="close-btn" id="close-menu" aria-label="Close menu"><i class="fas fa-times"></i></button>
+    </div>
+    <ul class="menu-links">
+        <li style="transition-delay: 0.1s;"><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li style="transition-delay: 0.2s;"><a href="live.html"><i class="fas fa-tv"></i> Live TV</a></li>
+        <li style="transition-delay: 0.3s;"><a href="programs.html"><i class="fas fa-film"></i> Programs</a></li>
+        <li style="transition-delay: 0.4s;"><a href="specials.html" class="active"><i class="fas fa-star"></i> Specials</a></li>
+        <li style="transition-delay: 0.5s;"><a href="news.html"><i class="fas fa-newspaper"></i> News</a></li>
+        <li style="transition-delay: 0.6s;"><a href="index.html#contact"><i class="fas fa-envelope"></i> Contact</a></li>
+    </ul>
+</div>
+
+<header class="specials-hero">
+    <div class="container">
+        <span id="specialsStatusBadge" class="status-badge is-offline">OFFLINE</span>
+        <h1>Mediablast <span class="gradient-text">Specials</span></h1>
+        <p class="fresh-subtitle">Rapid-fire episodes, live broadcasts, and specials from the Mediablast family — now featured right inside Mediablast Network.</p>
+        <div class="cta-group" style="margin-top: 25px;">
+            <a href="https://mediablastspecials.onrender.com/watch-live.html" target="_blank" rel="noopener" class="btn btn-primary">Watch Specials Live</a>
+            <a href="https://mediablastspecials.onrender.com" target="_blank" rel="noopener" class="btn btn-outline">Visit Full Site</a>
+        </div>
+    </div>
+</header>
+
+<section class="reveal" style="padding: 40px 0 100px;">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Episode <span class="gradient-text">Highlights</span></h2>
+        </div>
+
+        <div class="specials-gallery-track" id="specialsGallery">
+            <div class="specials-gallery-card" data-title="Season Premiere" data-video="https://www.youtube.com/embed/jfKfPfyJRdk" style="background:linear-gradient(135deg,#384090,#0a0b1e);"><span>Season Premiere</span></div>
+            <div class="specials-gallery-card" data-title="Live Episode Coverage" data-video="https://www.youtube.com/embed/jfKfPfyJRdk" style="background:linear-gradient(135deg,#00a8e8,#384090);"><span>Live Episode Coverage</span></div>
+            <div class="specials-gallery-card" data-title="Special Guest Episode" data-video="https://www.youtube.com/embed/jfKfPfyJRdk" style="background:linear-gradient(135deg,#484848,#0a0b1e);"><span>Special Guest Episode</span></div>
+            <div class="specials-gallery-card" data-title="Behind The Scenes" data-video="https://www.youtube.com/embed/jfKfPfyJRdk" style="background:linear-gradient(135deg,#384090,#00a8e8);"><span>Behind The Scenes</span></div>
+        </div>
+
+        <div class="specials-cta-panel glass">
+            <h3>Never Miss An Episode</h3>
+            <p>Mediablast Specials streams live episodes and behind-the-scenes specials on its own dedicated channel — tap in below.</p>
+            <a href="https://mediablastspecials.onrender.com/watch-live.html" target="_blank" rel="noopener" class="btn btn-primary">Watch Live Now</a>
+        </div>
+    </div>
+</section>
+
+<div id="programModal" class="modal">
+    <div class="modal-content glass">
+        <span class="close-modal">&times;</span>
+        <div id="modalPreview" class="modal-video-preview"></div>
+        <h2 id="modalTitle" class="gradient-text"></h2>
+        <p id="modalDescription"></p>
+    </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

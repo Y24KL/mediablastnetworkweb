@@ -5,85 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Programs | Mediablast Network</title>
     <link rel="icon" type="image/png" href="image/MEDIA BLAST.png?v=2">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-
-    <style>
-        .modal-video-preview {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: #000;
-            border-radius: 16px;
-            overflow: hidden;
-            margin-bottom: 28px;
-            box-shadow: 0 15px 40px rgba(0, 242, 255, 0.25);
-            position: relative;
-        }
-
-        .modal-video-preview iframe,
-        .modal-video-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-    </style>
 </head>
 
-<body class="light-theme">
+<body>
 
-<nav class="navbar glass sticky">
+<nav class="navbar navbar-solid">
     <a href="index.html" class="logo-link">
         <img src="image/MEDIA BLAST.png" alt="Logo" class="nav-logo-img">
     </a>
-
-    <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="live.html">Live TV</a></li>
-        <li><a href="programs.html" class="active">Programs</a></li>
-        <li><a href="news.html">News</a></li>
-        <li><a href="index.html#contact">Contact</a></li>
-    </ul>
+    <button id="menu-toggle" class="menu-toggle" aria-label="Open menu">
+        <i class="fas fa-bars"></i>
+    </button>
 </nav>
 
-<header class="page-header" style="padding-top:120px; text-align:center;">
+<div class="menu-overlay" id="menu-overlay"></div>
+<div class="side-menu" id="side-menu">
+    <div class="menu-header">
+        <img src="image/MEDIA BLAST.png" class="menu-logo" style="width: 120px;">
+        <button class="close-btn" id="close-menu" aria-label="Close menu"><i class="fas fa-times"></i></button>
+    </div>
+    <ul class="menu-links">
+        <li style="transition-delay: 0.1s;"><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li style="transition-delay: 0.2s;"><a href="live.html"><i class="fas fa-tv"></i> Live TV</a></li>
+        <li style="transition-delay: 0.3s;"><a href="programs.html" class="active"><i class="fas fa-film"></i> Programs</a></li>
+        <li style="transition-delay: 0.4s;"><a href="specials.html"><i class="fas fa-star"></i> Specials</a></li>
+        <li style="transition-delay: 0.5s;"><a href="news.html"><i class="fas fa-newspaper"></i> News</a></li>
+        <li style="transition-delay: 0.6s;"><a href="index.html#contact"><i class="fas fa-envelope"></i> Contact</a></li>
+    </ul>
+</div>
+
+<header class="page-header">
     <h1 class="gradient-text">Our Programs</h1>
     <p class="fresh-subtitle">Premium shows. Unfiltered vibes. Future-forward content.</p>
 </header>
 
 <section class="programs-grid-page">
     <div class="container">
-        <div class="blog-grid">
+        <div class="blog-grid" id="programsGrid">
 
-            <!-- CARD 1 (IMAGE ONLY) -->
             <div class="card glass program-card"
                 data-video=""
                 data-preview-img="image/7_DAYS_GLOBAL_DAY_OF_PRAYER_AND_FASTING1.jpg"
-                data-title="GLOBAL DAY OF PRAYER AND FASTING DAY 6"
-                data-description="Join millions around the world in prayer and fasting">
-
-                <div class="card-img" style="background-image:url('image/7_DAYS_GLOBAL_DAY_OF_PRAYER_AND_FASTING1.jpg')"></div>
-
-                <div class="card-body">
+                data-title="Global Day Of Prayer And Fasting"
+                data-description="Join millions around the world in prayer and fasting.">
+                <div class="card-img" style="background-image:url('image/7_DAYS_GLOBAL_DAY_OF_PRAYER_AND_FASTING1.jpg')">
                     <span class="tag">NOW</span>
-                    <h3>GLOBAL DAY OF PRAYER</h3>
-                    <p>Join millions around the world in prayer and fasting</p>
+                </div>
+                <div class="card-body">
+                    <h3>Global Day Of Prayer And Fasting</h3>
+                    <p>Join millions around the world in prayer and fasting.</p>
                     <button class="btn-read-more">Watch</button>
                 </div>
             </div>
 
-            <!-- CARD 2 (VIDEO) -->
             <div class="card glass program-card"
                 data-video="https://www.youtube.com/embed/3umsy4MqUSM"
                 data-preview-img="https://images.unsplash.com/photo-1504711432869-5d592f239cff?auto=format&fit=crop&q=80&w=1200"
                 data-title="Mediablast Specials"
-                data-description="Rapid fire updates from around the globe">
-
-                <div class="card-img" style="background-image:url('https://images.unsplash.com/photo-1504711432869-5d592f239cff?auto=format&fit=crop&q=80&w=600')"></div>
-
-                <div class="card-body">
+                data-description="Rapid-fire global updates, delivered unfiltered and direct to your screen.">
+                <div class="card-img" style="background-image:url('https://images.unsplash.com/photo-1504711432869-5d592f239cff?auto=format&fit=crop&q=80&w=600')">
                     <span class="tag">Daily</span>
+                </div>
+                <div class="card-body">
                     <h3>Mediablast Specials</h3>
-                    <p>Rapid fire updates from around the globe</p>
+                    <p>Rapid-fire global updates, delivered unfiltered and direct to your screen.</p>
                     <button class="btn-read-more">Watch Preview</button>
                 </div>
             </div>
@@ -92,60 +81,19 @@
     </div>
 </section>
 
-<!-- MODAL -->
-<div id="programModal" class="modal" style="display:none;">
+<div id="programModal" class="modal">
     <div class="modal-content glass">
         <span class="close-modal">&times;</span>
-
         <div id="modalPreview" class="modal-video-preview"></div>
-
         <h2 id="modalTitle" class="gradient-text"></h2>
         <p id="modalDescription"></p>
-
         <a href="live.html" class="btn btn-primary" style="width:100%;text-align:center;margin-top:15px;">
             <i class="fas fa-play-circle"></i> Join Live Broadcast
         </a>
     </div>
 </div>
 
-<script>
-const modal = document.getElementById("programModal");
-const modalPreview = document.getElementById("modalPreview");
-const modalTitle = document.getElementById("modalTitle");
-const modalDescription = document.getElementById("modalDescription");
-const closeModal = document.querySelector(".close-modal");
-
-document.querySelectorAll(".program-card").forEach(card => {
-    card.addEventListener("click", () => {
-
-        const video = card.dataset.video;
-        const image = card.dataset.previewImg;
-
-        modalTitle.textContent = card.dataset.title || "";
-        modalDescription.textContent = card.dataset.description || "";
-
-        modalPreview.innerHTML = "";
-
-        if (video) {
-            modalPreview.innerHTML = `
-                <iframe src="${video}" frameborder="0" allowfullscreen></iframe>
-            `;
-        } else if (image) {
-            modalPreview.innerHTML = `
-                <img src="${image}" />
-            `;
-        }
-
-        modal.style.display = "flex";
-    });
-});
-
-closeModal.onclick = () => modal.style.display = "none";
-
-window.onclick = (e) => {
-    if (e.target === modal) modal.style.display = "none";
-};
-</script>
-
+<script src="js/config.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
