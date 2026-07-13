@@ -4,6 +4,19 @@
 
 var MB_API_BASE = (window.MB_CONFIG && window.MB_CONFIG.API_BASE) || '';
 
+/* Shared modal open/close: locks background scroll while a modal (program
+   preview or full article) is open, so reading long content doesn't also
+   scroll the page behind it. */
+function showModal(modal) {
+  modal.style.display = 'flex';
+  document.body.classList.add('modal-open');
+}
+
+function hideModal(modal) {
+  modal.style.display = 'none';
+  document.body.classList.remove('modal-open');
+}
+
 function getYouTubeID(url) {
   if (!url) return null;
   var match = url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/);
@@ -101,7 +114,7 @@ function initProgramModal() {
     } else if (image) {
       modalPreview.innerHTML = '<img src="' + image + '" alt="">';
     }
-    modal.style.display = 'flex';
+    showModal(modal);
   }
 
   document.addEventListener('click', function (e) {
@@ -110,7 +123,7 @@ function initProgramModal() {
   });
 
   function close() {
-    modal.style.display = 'none';
+    hideModal(modal);
     modalPreview.innerHTML = '';
   }
 
@@ -300,10 +313,10 @@ function initArticleModal() {
     body.innerHTML = (article.body || '').split(/\n\s*\n/).map(function (para) {
       return '<p style="margin-top:14px;color:rgba(255,255,255,.8);line-height:1.7;">' + para + '</p>';
     }).join('');
-    modal.style.display = 'flex';
+    showModal(modal);
   });
 
-  function close() { modal.style.display = 'none'; }
+  function close() { hideModal(modal); }
   if (closeBtn) closeBtn.addEventListener('click', close);
   modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
 }
