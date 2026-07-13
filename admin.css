@@ -185,6 +185,17 @@ h1, h2, h3, h4 { font-family: var(--font-display); margin: 0 0 .5em; letter-spac
 }
 .gallery-item-row input { flex: 1; min-width: 120px; }
 .gallery-item-row button { flex-shrink: 0; }
+.gallery-item-row textarea {
+  flex-basis: 100%;
+  min-height: 80px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #fff;
+  font-family: inherit;
+  resize: vertical;
+}
 
 /* ---------- Site switcher ---------- */
 .site-tabs { display: flex; gap: 10px; margin: 28px 0 8px; flex-wrap: wrap; }

@@ -194,48 +194,118 @@ function initContactForm() {
   });
 }
 
-/* ---------------- Blog / News (placeholder content) ---------------- */
+/* ---------------- News / Articles (admin-authored, fed from the shared backend) ---------------- */
+var newsArticles = [
+  { id: 'fallback-1', title: 'Future of 8K Streaming', category: 'tech', imageUrl: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=800', body: 'Latest insights from our digital newsroom.' },
+  { id: 'fallback-2', title: 'Unfiltered News: Middle East', category: 'media', imageUrl: 'https://images.unsplash.com/photo-1504711432869-5d592f239cff?auto=format&fit=crop&q=80&w=800', body: 'Latest insights from our digital newsroom.' },
+  { id: 'fallback-3', title: 'Mediablast Originals: 2026', category: 'media', imageUrl: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=800', body: 'Latest insights from our digital newsroom.' },
+];
+var newsActiveFilter = 'all';
+
+function excerpt(text, maxLen) {
+  if (!text) return '';
+  var firstPara = text.split(/\n\s*\n/)[0];
+  return firstPara.length > maxLen ? firstPara.slice(0, maxLen).trim() + '…' : firstPara;
+}
+
+function renderNewsFilterButtons() {
+  var container = document.getElementById('blogFilterBtns');
+  if (!container) return;
+  var categories = Array.from(new Set(newsArticles.map(function (a) { return a.category || 'general'; })));
+  var buttons = ['<button class="filter-btn' + (newsActiveFilter === 'all' ? ' active' : '') + '" data-filter="all">All Stories</button>']
+    .concat(categories.map(function (cat) {
+      var label = cat.charAt(0).toUpperCase() + cat.slice(1);
+      return '<button class="filter-btn' + (newsActiveFilter === cat ? ' active' : '') + '" data-filter="' + cat + '">' + label + '</button>';
+    }));
+  container.innerHTML = buttons.join('');
+}
+
+function renderNewsGrid(search) {
+  var blogGrid = document.getElementById('blogGrid');
+  if (!blogGrid) return;
+  search = (search || '').toLowerCase();
+
+  var filtered = newsArticles.filter(function (item) {
+    var matchesFilter = newsActiveFilter === 'all' || (item.category || 'general') === newsActiveFilter;
+    var matchesSearch = item.title.toLowerCase().includes(search);
+    return matchesFilter && matchesSearch;
+  });
+
+  blogGrid.innerHTML = filtered.map(function (post) {
+    return (
+      '<div class="blog-card glass">' +
+      '<div class="card-img" style="background-image:url(\'' + (post.imageUrl || '') + '\')"></div>' +
+      '<div class="card-body">' +
+      '<span class="tag" style="position:static;display:inline-block;margin-bottom:8px;">' + (post.category || 'general').toUpperCase() + '</span>' +
+      '<h3>' + post.title + '</h3>' +
+      '<p>' + excerpt(post.body, 110) + '</p>' +
+      '<button class="btn-read-more" data-article-id="' + post.id + '">Read More</button>' +
+      '</div></div>'
+    );
+  }).join('');
+}
+
 function initBlog() {
   var blogGrid = document.getElementById('blogGrid');
   if (!blogGrid) return;
 
-  var blogData = [
-    { title: 'Future of 8K Streaming', cat: 'tech', img: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=800' },
-    { title: 'Unfiltered News: Middle East', cat: 'media', img: 'https://images.unsplash.com/photo-1504711432869-5d592f239cff?auto=format&fit=crop&q=80&w=800' },
-    { title: 'Mediablast Originals: 2026', cat: 'media', img: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=800' },
-  ];
-
-  function render(filter, search) {
-    filter = filter || 'all';
-    search = (search || '').toLowerCase();
-    blogGrid.innerHTML = '';
-    blogData
-      .filter(function (item) {
-        return (filter === 'all' || item.cat === filter) && item.title.toLowerCase().includes(search);
-      })
-      .forEach(function (post) {
-        var card = document.createElement('div');
-        card.className = 'blog-card glass';
-        card.innerHTML =
-          '<div class="card-img" style="background-image:url(\'' + post.img + '\')"></div>' +
-          '<div class="card-body"><span class="tag" style="position:static;display:inline-block;margin-bottom:8px;">' +
-          post.cat.toUpperCase() + '</span><h3>' + post.title + '</h3><p>Latest insights from our digital newsroom.</p></div>';
-        blogGrid.appendChild(card);
-      });
-  }
-
-  render();
+  renderNewsFilterButtons();
+  renderNewsGrid();
 
   var searchInput = document.getElementById('blogSearch');
-  if (searchInput) searchInput.addEventListener('input', function (e) { render('all', e.target.value); });
+  if (searchInput) searchInput.addEventListener('input', function (e) { renderNewsGrid(e.target.value); });
 
-  document.querySelectorAll('.filter-btn').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      document.querySelector('.filter-btn.active').classList.remove('active');
+  var filterBtns = document.getElementById('blogFilterBtns');
+  if (filterBtns) {
+    filterBtns.addEventListener('click', function (e) {
+      var btn = e.target.closest('.filter-btn');
+      if (!btn) return;
+      filterBtns.querySelector('.filter-btn.active').classList.remove('active');
       btn.classList.add('active');
-      render(btn.dataset.filter);
+      newsActiveFilter = btn.dataset.filter;
+      renderNewsGrid(searchInput ? searchInput.value : '');
     });
+  }
+
+  initArticleModal();
+}
+
+function applyNewsContent(articles) {
+  if (!articles || !articles.length) return;
+  newsArticles = articles;
+  newsActiveFilter = 'all';
+  renderNewsFilterButtons();
+  renderNewsGrid();
+}
+
+function initArticleModal() {
+  var modal = document.getElementById('articleModal');
+  if (!modal) return;
+  var preview = document.getElementById('articleModalPreview');
+  var title = document.getElementById('articleModalTitle');
+  var category = document.getElementById('articleModalCategory');
+  var body = document.getElementById('articleModalBody');
+  var closeBtn = document.getElementById('articleModalClose');
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-article-id]');
+    if (!btn) return;
+    var article = newsArticles.find(function (a) { return String(a.id) === btn.dataset.articleId; });
+    if (!article) return;
+
+    title.textContent = article.title;
+    category.textContent = (article.category || 'general').toUpperCase();
+    preview.innerHTML = article.imageUrl ? '<img src="' + article.imageUrl + '" alt="">' : '';
+    preview.style.display = article.imageUrl ? '' : 'none';
+    body.innerHTML = (article.body || '').split(/\n\s*\n/).map(function (para) {
+      return '<p style="margin-top:14px;color:rgba(255,255,255,.8);line-height:1.7;">' + para + '</p>';
+    }).join('');
+    modal.style.display = 'flex';
   });
+
+  function close() { modal.style.display = 'none'; }
+  if (closeBtn) closeBtn.addEventListener('click', close);
+  modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
 }
 
 /* ---------------- Specials page (native, fed from the shared backend) ---------------- */
@@ -294,5 +364,6 @@ document.addEventListener('DOMContentLoaded', function () {
       renderProgramsInto('#trendingPrograms', content.programs.slice(0, 4), true);
       renderProgramsInto('#programsGrid', content.programs, false);
     }
+    applyNewsContent(content.news);
   });
 });
