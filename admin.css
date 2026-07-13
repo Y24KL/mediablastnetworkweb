@@ -82,6 +82,28 @@ h1, h2, h3, h4 { font-family: var(--font-display); margin: 0 0 .5em; letter-spac
 .btn-danger { background: rgba(220,38,38,.18); color: #ff9a9a; border: 1px solid rgba(255,92,92,.4); }
 .btn-danger:hover { background: rgba(220,38,38,.3); }
 
+/* ---------- Image upload button (wraps a hidden file input) ---------- */
+.upload-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: .85rem;
+  font-weight: 600;
+  font-family: var(--font-display);
+  cursor: pointer;
+  background: transparent;
+  color: var(--white);
+  border: 1.5px solid rgba(255,255,255,.35);
+  transition: all .2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.upload-btn:hover { border-color: var(--mb-cyan); color: var(--mb-cyan); }
+.upload-btn.is-uploading { opacity: .6; pointer-events: none; }
+.upload-btn input[type="file"] { display: none; }
+
 /* ---------- Forms ---------- */
 .form-row { margin-bottom: 18px; display: flex; flex-direction: column; gap: 6px; }
 .form-row label { font-size: .82rem; color: rgba(255,255,255,.75); font-weight: 600; }
