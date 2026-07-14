@@ -17,12 +17,6 @@ function hideModal(modal) {
   document.body.classList.remove('modal-open');
 }
 
-function getYouTubeID(url) {
-  if (!url) return null;
-  var match = url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/);
-  return (match && match[2].length === 11) ? match[2] : null;
-}
-
 /* Fetch the shared backend's public Network content, falling back to null
    (callers keep whatever static content is already in the page) so the
    site still works if the backend is unreachable. */
