@@ -234,8 +234,24 @@ function showOfflineMode(container, indicator, videoUrl) {
 
 function getYouTubeID(url) {
     if (!url) return null;
-    const match = url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/);
-    return (match && match[2].length === 11) ? match[2] : null;
+    url = url.trim();
+
+    // A bare video ID pasted without a URL around it.
+    if (/^[\w-]{11}$/.test(url)) return url;
+
+    // Covers youtu.be/ID, youtube.com/embed|live|shorts|v/ID, and any
+    // watch?v=ID or ...&v=ID query param — including YouTube's own "Share"
+    // link for an in-progress live stream, which uses /live/ID rather than
+    // the classic /watch?v=ID format.
+    const patterns = [
+        /(?:youtu\.be\/|youtube\.com\/(?:live|embed|shorts|v)\/)([\w-]{11})/,
+        /[?&]v=([\w-]{11})/,
+    ];
+    for (const pattern of patterns) {
+        const match = url.match(pattern);
+        if (match) return match[1];
+    }
+    return null;
 }
 </script>
 </body>
