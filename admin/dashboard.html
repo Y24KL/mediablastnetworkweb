@@ -152,6 +152,46 @@
         </form>
       </div>
 
+      <!-- Network: Streaming Analytics -->
+      <div class="admin-panel" style="grid-column: 1 / -1;">
+        <h2>
+          Live Stream Analytics
+          <span id="streamAnalyticsBadge" class="badge-mini offline">NO SESSION</span>
+        </h2>
+        <p style="color:rgba(255,255,255,.65);font-size:.85rem;margin-top:-6px;">
+          Accurate per-stream viewer data from the live page — not the stream host's own
+          platform. "Currently watching" updates from a heartbeat every viewer's browser sends
+          while the page stays open. Refresh right before going live to check the latest numbers.
+        </p>
+
+        <div id="streamAnalyticsSummary" style="display:flex;gap:16px;flex-wrap:wrap;margin:16px 0;">
+          <div style="flex:1;min-width:140px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px;">
+            <div id="streamCurrentlyWatching" style="font-size:1.8rem;font-weight:700;color:var(--mb-cyan);">—</div>
+            <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.55);margin-top:2px;">Currently Watching</div>
+          </div>
+          <div style="flex:1;min-width:140px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px;">
+            <div id="streamTotalJoined" style="font-size:1.8rem;font-weight:700;color:var(--mb-cyan);">—</div>
+            <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.55);margin-top:2px;">Total Joined This Stream</div>
+          </div>
+          <div style="flex:1;min-width:140px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px;">
+            <div id="streamSessionTitle" style="font-size:1rem;font-weight:600;">—</div>
+            <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.55);margin-top:2px;">Current / Last Session</div>
+          </div>
+        </div>
+
+        <button type="button" id="streamAnalyticsRefreshBtn" class="btn btn-outline btn-sm">Refresh</button>
+        <span id="streamAnalyticsUpdated" style="font-size:.75rem;color:rgba(255,255,255,.5);margin-left:10px;"></span>
+
+        <div id="streamViewersList" style="margin-top:16px;"></div>
+
+        <details style="margin-top:20px;">
+          <summary style="cursor:pointer;color:rgba(255,255,255,.7);font-size:.85rem;">Past sessions</summary>
+          <div id="streamPastSessions" style="margin-top:10px;"></div>
+        </details>
+
+        <div class="admin-status-msg" data-status-for="streamAnalytics"></div>
+      </div>
+
     </div>
 
     <!-- ==================== MEDIABLAST SPECIALS ==================== -->
@@ -269,5 +309,6 @@
 <script>window.MB_ADMIN_DEFAULT_SITE = 'network';</script>
 <script src="../js/config.js"></script>
 <script src="../js/admin-dashboard.js"></script>
+<script src="../js/admin-analytics.js"></script>
 </body>
 </html>
