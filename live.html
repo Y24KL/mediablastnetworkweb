@@ -11,8 +11,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 </head>
 
 <body class="live-theater-mode">
@@ -74,75 +72,104 @@
 
 <script src="js/config.js"></script>
 <script>
-// --- FIREBASE CONFIG (viewer presence / "who's watching" only) ---
-const firebaseConfig = {
-    apiKey: "AIzaSyDzDUQ1i_CPP_nL4aTefmKPADzM-UVcCt0",
-    authDomain: "mbn-web-828e8.firebaseapp.com",
-    databaseURL: "https://mbn-web-828e8-default-rtdb.firebaseio.com",
-    projectId: "mbn-web-828e8",
-    storageBucket: "mbn-web-828e8.firebasestorage.app",
-    messagingSenderId: "432152602008",
-    appId: "1:432152602008:web:a492785cad9a1219b337ed",
-    measurementId: "G-FP2CCWHF13"
-};
-// Viewer-presence tracking only — if the Firebase SDK fails to load (CDN
-// hiccup, ad blocker), the stream itself must still work, so this is
-// guarded rather than a hard dependency for the rest of the page.
-let database = null;
-try {
-    firebase.initializeApp(firebaseConfig);
-    database = firebase.database();
-} catch (err) {
-    console.error('Firebase unavailable, continuing without viewer tracking.', err);
+// --- STREAMING ANALYTICS (Supabase) ---
+// Tracks accurate per-stream data: who joined, group size, and who's
+// currently watching (via a heartbeat). Replaces the old Firebase
+// "who's watching" tracker. Guarded throughout — if Supabase is
+// unreachable, the stream itself must still play regardless.
+const SUPABASE_URL = 'https://fuiwasujyhmdrccattvz.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ1aXdhc3VqeWhtZHJjY2F0dHZ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyODk3MjMsImV4cCI6MjEwMzg2NTcyM30.ybSx3Jl7pKBJHVcNj2Hz_R2u3LICkMGgtWMO8Kd0vs8';
+
+let mbViewerId = null;
+let mbHeartbeatTimer = null;
+
+function supabaseRpc(fn, body) {
+  return fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+    },
+    body: JSON.stringify(body),
+  }).then(async res => {
+    if (!res.ok) throw new Error('Supabase RPC ' + fn + ' failed: ' + res.status);
+    const text = await res.text();
+    return text ? JSON.parse(text) : null;
+  });
+}
+
+// Called once syncLiveContent() has confirmed the stream is actually live.
+async function trackStreamJoin(title, name, groupSize) {
+  try {
+    const sessionId = await supabaseRpc('get_or_create_stream_session', { p_title: title || 'Live Stream' });
+    const viewerId = await supabaseRpc('join_stream_session', {
+      p_session_id: sessionId,
+      p_name: name || null,
+      p_group_size: groupSize || 1,
+    });
+    mbViewerId = viewerId;
+
+    mbHeartbeatTimer = setInterval(() => {
+      if (mbViewerId != null) supabaseRpc('heartbeat_stream_viewer', { p_viewer_id: mbViewerId }).catch(() => {});
+    }, 20000);
+
+    const sendLeave = () => {
+      if (mbViewerId == null) return;
+      fetch(`${SUPABASE_URL}/rest/v1/rpc/leave_stream_session`, {
+        method: 'POST',
+        keepalive: true,
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ p_viewer_id: mbViewerId }),
+      }).catch(() => {});
+    };
+    window.addEventListener('pagehide', sendLeave);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') sendLeave();
+    });
+  } catch (err) {
+    console.warn('Stream view tracking unavailable (non-blocking):', err);
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const overlay = document.getElementById('pre-stream-overlay');
-    const form = document.getElementById('viewer-form');
-    const skipLink = document.getElementById('skip-link');
-    const nameInput = document.getElementById('viewer-name');
-    const countInput = document.getElementById('viewer-count');
-    const stepUp = document.getElementById('step-up');
-    const stepDown = document.getElementById('step-down');
+  const overlay = document.getElementById('pre-stream-overlay');
+  const form = document.getElementById('viewer-form');
+  const skipLink = document.getElementById('skip-link');
+  const nameInput = document.getElementById('viewer-name');
+  const countInput = document.getElementById('viewer-count');
+  const stepUp = document.getElementById('step-up');
+  const stepDown = document.getElementById('step-down');
 
-    if (localStorage.getItem('mbn_name')) nameInput.value = localStorage.getItem('mbn_name');
+  if (localStorage.getItem('mbn_name')) nameInput.value = localStorage.getItem('mbn_name');
 
-    stepUp.onclick = () => countInput.value = parseInt(countInput.value) + 1;
-    stepDown.onclick = () => { if (parseInt(countInput.value) > 1) countInput.value = parseInt(countInput.value) - 1; };
+  stepUp.onclick = () => countInput.value = parseInt(countInput.value) + 1;
+  stepDown.onclick = () => { if (parseInt(countInput.value) > 1) countInput.value = parseInt(countInput.value) - 1; };
 
-    const enterStream = () => {
-        overlay.classList.add('fade-out');
-        syncLiveContent();
-        setTimeout(() => overlay.remove(), 500);
-    };
+  const enterStream = (name, groupSize) => {
+    overlay.classList.add('fade-out');
+    syncLiveContent(name, groupSize);
+    setTimeout(() => overlay.remove(), 500);
+  };
 
-    skipLink.onclick = (e) => { e.preventDefault(); enterStream(); };
+  skipLink.onclick = (e) => { e.preventDefault(); enterStream('Anonymous', 1); };
 
-    form.onsubmit = async (e) => {
-        e.preventDefault();
-        const viewerData = {
-            name: nameInput.value.trim() || "Anonymous",
-            groupSize: parseInt(countInput.value) || 1,
-            timestamp: Date.now()
-        };
-        try {
-            if (database) {
-                await database.ref('stream_entries').push(viewerData);
-                const presenceRef = database.ref('liveViewers').push(viewerData.groupSize);
-                presenceRef.onDisconnect().remove();
-            }
-            if (viewerData.name !== "Anonymous") localStorage.setItem('mbn_name', viewerData.name);
-            enterStream();
-        } catch (err) {
-            console.error("Firebase Error:", err);
-            enterStream();
-        }
-    };
+  form.onsubmit = (e) => {
+    e.preventDefault();
+    const name = nameInput.value.trim() || 'Anonymous';
+    const groupSize = parseInt(countInput.value) || 1;
+    if (name !== 'Anonymous') localStorage.setItem('mbn_name', name);
+    enterStream(name, groupSize);
+  };
 });
 
 /* --- Player: source of truth is the shared backend's network `live` object,
    falling back to the static data/links.json if the backend is unreachable --- */
-async function syncLiveContent() {
+async function syncLiveContent(viewerName, viewerGroupSize) {
     const container = document.getElementById('media-container');
     const liveIndicator = document.querySelector('.live-indicator');
     const titleHeader = document.getElementById('stream-title');
@@ -194,6 +221,7 @@ async function syncLiveContent() {
     }
 
     liveIndicator.style.display = 'inline-flex';
+    trackStreamJoin(data.title, viewerName, viewerGroupSize);
 
     if (ytId) {
         // Browsers block unmuted autoplay without prior user interaction —
